@@ -35,6 +35,7 @@
 #define PROS_USE_LITERALS
 
 #include "api.h"
+#include "dku/chassis_task.hpp"
 
 /**
  * You should add more #includes here

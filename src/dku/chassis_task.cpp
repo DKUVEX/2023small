@@ -13,9 +13,9 @@
 
   ==============================================================================
   @endverbatim
-  ****************************(C) COPYRIGHT COPYRIGHT 2023 Blue Bear****************************
+  ****************************(C) COPYRIGHT 2023 Blue Bear****************************
   */
-#include "../include/dku/chassis_task.hpp"
+#include "dku/chassis_task.hpp"
 #include "dku/remote_control.hpp"
 
 
@@ -73,7 +73,7 @@ static void chassis_init(chassis_move_t *chassis_move_init)
   * @retval         none
   */
 void chassis_task_fn(void* param) {
-    std::cout << "My task runs" << std::endl;
+    std::cout << "Chassis task runs" << std::endl;
     pros::Task::delay(CHASSIS_TASK_INIT_TIME);
     chassis_init(&chassis_move);
     std::uint32_t now = pros::millis();

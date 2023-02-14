@@ -17,8 +17,7 @@
   */
 #ifndef REMOTE_CONTROL_H
 #define REMOTE_CONTROL_H
-#include "../api.h"
-void remote_control_init(void);
+#include "api.h"
 /**
   * @brief          get remote control data point
   * @param[in]      none

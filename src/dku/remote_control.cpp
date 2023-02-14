@@ -15,7 +15,7 @@
   @endverbatim
   ****************************(C) COPYRIGHT COPYRIGHT 2023 Blue Bear****************************
   */
-#include "../include/dku/remote_control.hpp"
+#include "dku/remote_control.hpp"
 
 #define REMOTE_CONTROLLER_PORT 13
 

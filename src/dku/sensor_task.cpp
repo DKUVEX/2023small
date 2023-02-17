@@ -17,6 +17,9 @@
   */
 #include "dku/sensor_task.hpp"
 #include "pros/gps.hpp"
+#include "pros/llemu.hpp"
+#include <iostream>
+#include <ostream>
 
 sensor_data_t sensor_fetch;
 pros::GPS gps_front(SENSOR_GPS_FRONT_PORT, SENSOR_GPS_FRONT_INITIAL_X, SENSOR_GPS_FRONT_INITIAL_Y, 
@@ -118,6 +121,16 @@ void sensor_task_fn(void* param)
     while (true) {
         gps_data_update(&sensor_fetch.gps_front_data);
         gps_data_update(&sensor_fetch.gps_back_data);
+        /*test code*/
+        //TODO: add a polt on pc to see the trend of gyro and acc(transfer com data to some apps?)
+        // pros::lcd::print(0, "position x: %lf", sensor_fetch.gps_front_data.gps_pos.x);
+        // pros::lcd::print(1, "position y: %lf", sensor_fetch.gps_front_data.gps_pos.y);
+        // pros::lcd::print(2, "heading: %lf", sensor_fetch.gps_front_data.gps_pos.yaw);
+        // pros::lcd::print(3, "gyro_x: %lf", sensor_fetch.gps_front_data.gps_gyro.x);
+        // pros::lcd::print(4, "gyro_y: %lf", sensor_fetch.gps_front_data.gps_gyro.y);
+        // pros::lcd::print(5, "acc_x: %lf", sensor_fetch.gps_front_data.gps_acc.x);
+        // pros::lcd::print(6, "acc_y: %lf", sensor_fetch.gps_front_data.gps_acc.y);
+
         pros::Task::delay_until(&now, SENSOR_CONTROL_TIME_MS);
     }
 }

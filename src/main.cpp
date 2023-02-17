@@ -27,6 +27,7 @@ void initialize() {
     pros::lcd::set_text(1, "Hello PROS User!");
 
     pros::lcd::register_btn1_cb(on_center_button);
+
     pros::Task sensor_task (sensor_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
                 TASK_STACK_DEPTH_DEFAULT, "sensor_task");
     pros::Task chassis_task (chassis_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,

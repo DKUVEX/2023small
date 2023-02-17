@@ -28,6 +28,7 @@
 //sensor task control time  2ms
 //传感器任务控制间隔 2ms
 #define SENSOR_CONTROL_TIME_MS 2
+
 #define SENSOR_GPS_FRONT_PORT 20
 #define SENSOR_GPS_BACK_PORT 1
 

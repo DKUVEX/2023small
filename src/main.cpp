@@ -30,6 +30,9 @@ void initialize() {
 
     pros::Task chassis_task (chassis_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
                 TASK_STACK_DEPTH_DEFAULT, "chassis_task");
+    pros::Task sensor_task (sensor_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
+                TASK_STACK_DEPTH_DEFAULT, "chassis_task");
+
 }
 
 /**

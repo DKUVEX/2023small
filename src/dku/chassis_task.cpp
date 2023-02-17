@@ -1,6 +1,6 @@
 /**
   ****************************(C) COPYRIGHT 2023 Blue Bear****************************
-  * @file       chassis.cpp
+  * @file       chassis_task.cpp
   * @brief      chassis control task,
   *             底盘控制任务
   * @note       
@@ -72,7 +72,8 @@ static void chassis_init(chassis_move_t *chassis_move_init)
   * @param[in]      param: 空
   * @retval         none
   */
-void chassis_task_fn(void* param) {
+void chassis_task_fn(void* param) 
+{
     std::cout << "Chassis task runs" << std::endl;
     pros::Task::delay(CHASSIS_TASK_INIT_TIME);
     chassis_init(&chassis_move);

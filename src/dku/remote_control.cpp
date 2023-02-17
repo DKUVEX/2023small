@@ -17,8 +17,6 @@
   */
 #include "dku/remote_control.hpp"
 
-#define REMOTE_CONTROLLER_PORT 13
-
 
 //remote control data 
 //遥控器控制变量

@@ -31,6 +31,7 @@
 #define FLYWHEEL_MOTOR_PORT             6
 #define INDEX_MOTOR_PORT                10
 #define ROLLER_MOTOR_PORT               4
+#define GAS_GPIO_PORT                   1 // port A
 
 #define FUNCTION_MOTOR_GEAR_RATIO       (pros::E_MOTOR_GEARSET_18)
 #define FUCTION_MOTOR_ENCODER_UNIT      (pros::E_MOTOR_ENCODER_DEGREES)
@@ -51,6 +52,11 @@ typedef struct {
     std::float_t speed;
     std::uint16_t give_voltage;
 }functional_motor_t;
+// typedef struct {
+//     pros::ADIPort *motor_status;
+//     std::float_t speed;
+//     std::uint16_t give_voltage;
+// }functional_adiport_t;
 
 typedef struct {
     pros::Controller *functional_RC; //竞技功能使用的遥控器指针, the point to remote control
@@ -58,6 +64,7 @@ typedef struct {
     functional_motor_t motor_index;   // motor data.电机数据
     functional_motor_t motor_intake;   // motor data.电机数据
     functional_motor_t motor_roller;   // motor data.电机数据
+    pros::ADIPort *gas_gpio;           // control gas
 }functional_behaviour_t;
 
 /**

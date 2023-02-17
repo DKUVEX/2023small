@@ -17,6 +17,7 @@
 */
 
 #include "dku/functional_task.hpp"
+#include "pros/adi.h"
 #include "pros/misc.h"
 
 
@@ -27,6 +28,7 @@ pros::Motor roller_motor(ROLLER_MOTOR_PORT, FUNCTION_MOTOR_GEAR_RATIO, false, FU
 
 pros::Motor flywheel_motor(FLYWHEEL_MOTOR_PORT, false); //fly wheel do not have gear
 
+pros::ADIPort gas_GPIO(GAS_GPIO_PORT, pros::E_ADI_DIGITAL_OUT);
 /**
   * @brief          "functional_behaviour" valiable initialization, include pid initialization, remote control data point initialization, chassis motors
   *                 data point initialization, gimbal motor data point initialization, and gyro sensor angle point initialization.
@@ -43,12 +45,14 @@ static void functional_init(functional_behaviour_t *functional_behaviour_init);
 
 /**
   * @brief          concrol the behaviour of fly wheel
-  * @param[in]      int: flywheel_status
+  * @param[in]      int: flywheel_status    
+  * @param[out]     functional_motor_t: "flywheel_motor" valiable point
   * @retval         none
   */
 /**
   * @brief          飞轮控制函数
   * @param[in]      int: flywheel_status
+  * @param[out]     functional_motor_t: "flywheel_motor" 变量指针
   * @retval         none
   */
 //TODO: not finish yet
@@ -56,12 +60,14 @@ static void flywheel_move(functional_motor_t *flywheel_motor, int flywheel_statu
 
 /**
   * @brief          concrol the behaviour of fly wheel
-  * @param[in]      int: flywheel_status
+  * @param[in]      int: flywheel_status    
+  * @param[out]     functional_motor_t: "flywheel_motor" valiable point
   * @retval         none
   */
 /**
   * @brief          飞轮控制函数
   * @param[in]      int: flywheel_status
+  * @param[out]     functional_motor_t: "flywheel_motor" 变量指针
   * @retval         none
   */
 //TODO: not finish yet
@@ -98,6 +104,8 @@ static void functional_init(functional_behaviour_t *functional_behaviour_init)
     functional_behaviour_init->motor_intake.motor_status = &intake_motor;
     functional_behaviour_init->motor_roller.motor_status = &roller_motor;
     functional_behaviour_init->motor_flywheel.motor_status = &flywheel_motor;
+    functional_behaviour_init->gas_gpio = &gas_GPIO;
+    functional_behaviour_init->gas_gpio->set_value(HIGH);
 }
 /**
   * @brief          finctional task, osDelay FUNCTIONAL_CONTROL_TIME_MS (2ms) 
@@ -132,7 +140,8 @@ void functional_task_fn(void* param)
                  && !(functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R1)))
         {
             functional_behaviour.motor_intake.motor_status->move_velocity(-FUNCTIONAL_MOTOR_ZERO_SPEED);
-        }        // functional_behaviour.motor_intake.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED
+        }        
+        // functional_behaviour.motor_intake.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED
         //                                                              *(functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R1)
         //                                                               -functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R2)
         //                                                               )
@@ -156,6 +165,13 @@ void functional_task_fn(void* param)
             flywheel_status = E_FLYWHEEL_STATUS_SPEED_LOW;
         }
         flywheel_move(&functional_behaviour.motor_flywheel,flywheel_status);
+        
+        if (functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_UP) ) {
+            functional_behaviour.gas_gpio->set_value(HIGH);
+        }
+        if (functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) ) {
+            functional_behaviour.gas_gpio->set_value(LOW);
+        }
         pros::Task::delay_until(&now, FUNCTIONAL_CONTROL_TIME_MS);
     }
 }

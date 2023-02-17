@@ -81,16 +81,16 @@ void chassis_task_fn(void* param) {
         // Do opcontrol things
         chassis_move.motor_chassis[0].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
                                                         +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
-                                                        -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
+                                                        +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
         chassis_move.motor_chassis[1].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
                                                         -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
-                                                        -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
+                                                        +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
         chassis_move.motor_chassis[2].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
                                                         -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
-                                                        +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
+                                                        -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
         chassis_move.motor_chassis[3].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
                                                         +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
-                                                        +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
+                                                        -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
         pros::Task::delay_until(&now, CHASSIS_CONTROL_TIME_MS);
     }
 }

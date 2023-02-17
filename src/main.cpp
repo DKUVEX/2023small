@@ -32,7 +32,8 @@ void initialize() {
                 TASK_STACK_DEPTH_DEFAULT, "sensor_task");
     pros::Task chassis_task (chassis_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
                 TASK_STACK_DEPTH_DEFAULT, "chassis_task");
-    
+    pros::Task functional_task (functional_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
+                TASK_STACK_DEPTH_DEFAULT, "functional_task");
 
 }
 

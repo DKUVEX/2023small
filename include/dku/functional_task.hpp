@@ -20,12 +20,16 @@
 
 #include "api.h"
 #include "dku/remote_control.hpp"
+#include "dku/pid.hpp"
 //in the beginning of task ,wait a time
 //任务开始空闲一段时间
 #define FUNCTIONAL_TASK_INIT_TIME       300
 //functional task control time  2ms
 //竞技任务控制间隔 2ms
 #define FUNCTIONAL_CONTROL_TIME_MS      2
+//flywheel max motor control current
+//飞轮最大can发送电流值
+#define MAX_FLYWHEEL_MOTOR_VOLTAGE 12000.0f
 
 #define INTAKE_MOTOR_PORT               7
 #define FLYWHEEL_MOTOR_PORT             6
@@ -42,6 +46,13 @@
 
 #define FUNCTIONAL_LIFT_HIGH_STATE LOW
 #define FUNCTIONAL_LIFT_LOW_STATE HIGH 
+
+#define FLYWHEEL_MOTOR_SPEED_PID_KP         100.0f
+#define FLYWHEEL_MOTOR_SPEED_PID_KI         10.0f
+#define FLYWHEEL_MOTOR_SPEED_PID_KD         0.0f
+#define PITCH_PAW_SPEED_PID_MAX_OUT         MAX_FLYWHEEL_MOTOR_VOLTAGE
+#define PITCH_PAW_SPEED_PID_MAX_IOUT        2000.0f
+
 typedef enum flywheel_status_e
 {
     E_FLYWHEEL_STATUS_OFF = 0,
@@ -52,7 +63,9 @@ typedef enum flywheel_status_e
 typedef struct {
     pros::Motor *motor_status;
     std::float_t speed;
-    std::uint16_t give_voltage;
+    float set_voltage;
+    float gave_voltage;
+    pid_type_def motor_speed_pid;
 }functional_motor_t;
 
 typedef struct {

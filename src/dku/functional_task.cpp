@@ -76,20 +76,24 @@ static void flywheel_move(functional_motor_t *flywheel_motor, int flywheel_statu
 {
     if (flywheel_status == E_FLYWHEEL_STATUS_OFF)
     {
-        flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_ZERO_VOLTAGE;
-        flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, (float)flywheel_motor->motor_status->get_voltage(), (float)flywheel_motor->set_voltage);
-        flywheel_motor->motor_status->move_voltage(flywheel_motor->give_voltage);
+        // flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_ZERO_VOLTAGE;
+        // flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, (float)flywheel_motor->motor_status->get_voltage(), (float)flywheel_motor->set_voltage);
+        // flywheel_motor->motor_status->move_voltage(flywheel_motor->give_voltage);
+        flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_ZERO_VOLTAGE);
     }
     else if (flywheel_status == E_FLYWHEEL_STATUS_SPEED_HIGH) {
-        flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.8;
+        flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.5;
         flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, (float)flywheel_motor->motor_status->get_voltage(), (float)flywheel_motor->set_voltage);
-        flywheel_motor->motor_status->move_voltage(flywheel_motor->give_voltage);
-
+        flywheel_motor->motor_status->move_voltage((int)flywheel_motor->give_voltage);
+        printf("gave voltage %d     set voltage %d\n", (int)flywheel_motor->give_voltage, flywheel_motor->motor_status->get_voltage());
+        // flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.5);
     }
     else if (flywheel_status == E_FLYWHEEL_STATUS_SPEED_LOW) {
         flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.6;
         flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, (float)flywheel_motor->motor_status->get_voltage(), (float)flywheel_motor->set_voltage);
         flywheel_motor->motor_status->move_voltage(flywheel_motor->give_voltage);
+        printf("gave voltage %d     set voltage %d\n", (int)flywheel_motor->give_voltage, flywheel_motor->motor_status->get_voltage());
+        // flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.6);
     }
 }
 /**

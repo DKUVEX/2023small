@@ -17,6 +17,7 @@
 */
 
 #include "dku/functional_task.hpp"
+#include "control/pid.hpp"
 #include "pros/adi.h"
 #include "pros/misc.h"
 
@@ -75,13 +76,20 @@ static void flywheel_move(functional_motor_t *flywheel_motor, int flywheel_statu
 {
     if (flywheel_status == E_FLYWHEEL_STATUS_OFF)
     {
-        flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_ZERO_VOLTAGE);
+        flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_ZERO_VOLTAGE;
+        flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, (float)flywheel_motor->motor_status->get_voltage(), (float)flywheel_motor->set_voltage);
+        flywheel_motor->motor_status->move_voltage(flywheel_motor->give_voltage);
     }
     else if (flywheel_status == E_FLYWHEEL_STATUS_SPEED_HIGH) {
-        flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_MAX_VOLTAGE);        
+        flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.8;
+        flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, (float)flywheel_motor->motor_status->get_voltage(), (float)flywheel_motor->set_voltage);
+        flywheel_motor->motor_status->move_voltage(flywheel_motor->give_voltage);
+
     }
     else if (flywheel_status == E_FLYWHEEL_STATUS_SPEED_LOW) {
-        flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.5);        
+        flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.6;
+        flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, (float)flywheel_motor->motor_status->get_voltage(), (float)flywheel_motor->set_voltage);
+        flywheel_motor->motor_status->move_voltage(flywheel_motor->give_voltage);
     }
 }
 /**
@@ -98,6 +106,8 @@ static void flywheel_move(functional_motor_t *flywheel_motor, int flywheel_statu
 //TODO: not finish yet
 static void functional_init(functional_behaviour_t *functional_behaviour_init)
 {
+    static const float paw_pitch_speed_pid[3] = {FLYWHEEL_SPEED_PID_KP, FLYWHEEL_SPEED_PID_KI, FLYWHEEL_SPEED_PID_KD};
+    
     flywheel_motor.set_encoder_units(FUCTION_MOTOR_ENCODER_UNIT);
     functional_behaviour_init->functional_RC = get_remote_control_point();
     functional_behaviour_init->motor_index.motor_status = &index_motor;
@@ -106,6 +116,9 @@ static void functional_init(functional_behaviour_t *functional_behaviour_init)
     functional_behaviour_init->motor_flywheel.motor_status = &flywheel_motor;
     functional_behaviour_init->gas_gpio = &gas_GPIO;
     functional_behaviour_init->gas_gpio->set_value(HIGH);
+
+    PID_init(&functional_behaviour_init->motor_flywheel.speed_pid, PID_POSITION, paw_pitch_speed_pid, FLYWHEEL_SPEED_PID_MAX_OUT, FLYWHEEL_SPEED_PID_MAX_IOUT);
+    functional_behaviour_init->motor_intake.motor_status->set_voltage_limit(MAX_FLEWHEEL_MOTOR_VOLTAGE);
 }
 /**
   * @brief          finctional task, osDelay FUNCTIONAL_CONTROL_TIME_MS (2ms) 

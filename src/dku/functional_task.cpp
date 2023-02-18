@@ -26,7 +26,7 @@ pros::Motor intake_motor(INTAKE_MOTOR_PORT, FUNCTION_MOTOR_GEAR_RATIO, false, FU
 pros::Motor index_motor(INDEX_MOTOR_PORT, FUNCTION_MOTOR_GEAR_RATIO, true, FUCTION_MOTOR_ENCODER_UNIT);
 pros::Motor roller_motor(ROLLER_MOTOR_PORT, FUNCTION_MOTOR_GEAR_RATIO, false, FUCTION_MOTOR_ENCODER_UNIT);
 
-pros::Motor flywheel_motor(FLYWHEEL_MOTOR_PORT, false); //fly wheel do not have gear
+pros::Motor flywheel_motor(FLYWHEEL_MOTOR_PORT, true); //fly wheel do not have gear
 
 pros::ADIPort gas_GPIO(GAS_GPIO_PORT, pros::E_ADI_DIGITAL_OUT);
 /**
@@ -41,18 +41,18 @@ pros::ADIPort gas_GPIO(GAS_GPIO_PORT, pros::E_ADI_DIGITAL_OUT);
   * @retval         none
   */
 //TODO: not finish yet
-static void functional_init(functional_behaviour_t *functional_behaviour_init);
+static void functional_init(functional_behaviour_t* functional_behaviour_init);
 
 /**
   * @brief          concrol the behaviour of fly wheel
-  * @param[in]      int: flywheel_status    
-  * @param[out]     functional_motor_t: "flywheel_motor" valiable point
+  * @param[out]     flywheel_motor: "flywheel_motor" valiable point
+  * @param[in]      flywheel_status: flywheel speed status    
   * @retval         none
   */
 /**
   * @brief          飞轮控制函数
-  * @param[in]      int: flywheel_status
-  * @param[out]     functional_motor_t: "flywheel_motor" 变量指针
+  * @param[out]     flywheel_motor: "flywheel_motor" 变量指针
+  * @param[in]      flywheel_status: flywheel 速度状态指示
   * @retval         none
   */
 //TODO: not finish yet
@@ -60,14 +60,14 @@ static void flywheel_move(functional_motor_t *flywheel_motor, int flywheel_statu
 
 /**
   * @brief          concrol the behaviour of fly wheel
-  * @param[in]      int: flywheel_status    
-  * @param[out]     functional_motor_t: "flywheel_motor" valiable point
+  * @param[out]     flywheel_motor: "flywheel_motor" valiable point
+  * @param[in]      flywheel_status: flywheel speed status    
   * @retval         none
   */
 /**
   * @brief          飞轮控制函数
-  * @param[in]      int: flywheel_status
-  * @param[out]     functional_motor_t: "flywheel_motor" 变量指针
+  * @param[out]     flywheel_motor: "flywheel_motor" 变量指针
+  * @param[in]      flywheel_status: flywheel 速度状态指示
   * @retval         none
   */
 //TODO: not finish yet
@@ -167,10 +167,10 @@ void functional_task_fn(void* param)
         flywheel_move(&functional_behaviour.motor_flywheel,flywheel_status);
         
         if (functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_UP) ) {
-            functional_behaviour.gas_gpio->set_value(HIGH);
+            functional_behaviour.gas_gpio->set_value(FUNCTIONAL_LIFT_HIGH_STATE);
         }
         if (functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) ) {
-            functional_behaviour.gas_gpio->set_value(LOW);
+            functional_behaviour.gas_gpio->set_value(FUNCTIONAL_LIFT_LOW_STATE);
         }
         pros::Task::delay_until(&now, FUNCTIONAL_CONTROL_TIME_MS);
     }

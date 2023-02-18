@@ -40,6 +40,8 @@
 #define FUNCTIONAL_MOTOR_MAX_VOLTAGE       12000 // The motor has the 18 Gearset
 #define FUNCTIONAL_MOTOR_ZERO_VOLTAGE      0 // The motor has the 18 Gearset
 
+#define FUNCTIONAL_LIFT_HIGH_STATE LOW
+#define FUNCTIONAL_LIFT_LOW_STATE HIGH 
 typedef enum flywheel_status_e
 {
     E_FLYWHEEL_STATUS_OFF = 0,
@@ -52,11 +54,6 @@ typedef struct {
     std::float_t speed;
     std::uint16_t give_voltage;
 }functional_motor_t;
-// typedef struct {
-//     pros::ADIPort *motor_status;
-//     std::float_t speed;
-//     std::uint16_t give_voltage;
-// }functional_adiport_t;
 
 typedef struct {
     pros::Controller *functional_RC; //竞技功能使用的遥控器指针, the point to remote control

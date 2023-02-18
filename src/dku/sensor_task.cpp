@@ -41,12 +41,12 @@ static void gps_data_update(gps_all_t *gps_update);
 
 /**
   * @brief          "sensor_fetch" valiable initialization, include internal and external sensors
-  * @param[out]     sensor_fetch_t: "sensor_fetch_init" valiable point
+  * @param[out]     sensor_data_t: "sensor_fetch_init" valiable point
   * @retval         none
   */
 /**
   * @brief          初始化"sensor_fetch"变量，包括各内置、外置传感器数据初始化
-  * @param[out]     sensor_fetch_t:"sensor_fetch_init"变量指针.
+  * @param[out]     sensor_data_t:"sensor_fetch_init"变量指针.
   * @retval         none
   */
 //TODO: not finish yet

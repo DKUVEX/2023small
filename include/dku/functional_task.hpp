@@ -47,7 +47,7 @@
 #define MAX_FLEWHEEL_MOTOR_VOLTAGE 11800 
 //flywheel speed close-loop PID params, max out and max iout
 //飞轮 PID参数以及 PID最大输出，积分输出
-#define FLYWHEEL_SPEED_PID_KP        10
+#define FLYWHEEL_SPEED_PID_KP        1
 #define FLYWHEEL_SPEED_PID_KI        0
 #define FLYWHEEL_SPEED_PID_KD        0
 #define FLYWHEEL_SPEED_PID_MAX_OUT   MAX_FLEWHEEL_MOTOR_VOLTAGE

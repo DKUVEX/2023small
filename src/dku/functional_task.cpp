@@ -74,26 +74,45 @@ static void flywheel_move(functional_motor_t *flywheel_motor, int flywheel_statu
 //TODO: not finish yet
 static void flywheel_move(functional_motor_t *flywheel_motor, int flywheel_status)
 {
+    // std::cout<<"voltage limit"<<flywheel_motor->motor_status->get_voltage_limit()<<std::endl; //do not use get_voltage_limit()
+    // printf("velocity: %f \n", flywheel_motor->motor_status->get_actual_velocity());
+    // flywheel_motor->motor_status->get_voltage_limit();
     if (flywheel_status == E_FLYWHEEL_STATUS_OFF)
     {
-        // flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_ZERO_VOLTAGE;
-        // flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, (float)flywheel_motor->motor_status->get_voltage(), (float)flywheel_motor->set_voltage);
+        flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_ZERO_VOLTAGE;
+        flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, flywheel_motor->motor_status->get_voltage(), flywheel_motor->set_voltage);
         // flywheel_motor->motor_status->move_voltage(flywheel_motor->give_voltage);
-        flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_ZERO_VOLTAGE);
+        flywheel_motor->motor_status->move_voltage(flywheel_motor->give_voltage);
+        
+        // flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_ZERO_VOLTAGE);
+
+        // std::cout<<"stop      gave voltage:"<<(int)flywheel_motor->give_voltage<<"      set voltage"<<(float)flywheel_motor->motor_status->get_voltage()/100<<std::endl;
+        // printf("stop       gave voltage %d     set voltage %f\n", (int)flywheel_motor->give_voltage, (float)flywheel_motor->motor_status->get_voltage()/100);
+        pros::lcd::print(3, "set  %d; stop gave %d", flywheel_motor->set_voltage, flywheel_motor->give_voltage);
+        pros::lcd::print(1, "set voltage %d",flywheel_motor->motor_status->get_voltage());
     }
     else if (flywheel_status == E_FLYWHEEL_STATUS_SPEED_HIGH) {
-        flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.5;
-        flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, (float)flywheel_motor->motor_status->get_voltage(), (float)flywheel_motor->set_voltage);
-        flywheel_motor->motor_status->move_voltage((int)flywheel_motor->give_voltage);
-        printf("gave voltage %d     set voltage %d\n", (int)flywheel_motor->give_voltage, flywheel_motor->motor_status->get_voltage());
-        // flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.5);
+        flywheel_motor->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.5;
+        flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, flywheel_motor->motor_status->get_voltage(), flywheel_motor->set_voltage);
+        flywheel_motor->motor_status->move_voltage(flywheel_motor->give_voltage);
+        
+        // flywheel_motor->motor_status->move_voltage(12000);
+        // std::cout<<"high      gave voltage:"<<(int)flywheel_motor->give_voltage<<"      set voltage"<<(float)flywheel_motor->motor_status->get_voltage()/100<<std::endl;
+        // printf("High speed       gave voltage %d     set voltage %f\n", (int)flywheel_motor->give_voltage, (float)flywheel_motor->motor_status->get_voltage()/100);
+        // flywheel_motor->motor_status->move(127*0.5);
+        pros::lcd::print(2, "high gave %d", flywheel_motor->give_voltage);
+        pros::lcd::print(3, "high voltage %d",flywheel_motor->motor_status->get_voltage());
     }
     else if (flywheel_status == E_FLYWHEEL_STATUS_SPEED_LOW) {
-        flywheel_motor->set_voltage = FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.6;
-        flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, (float)flywheel_motor->motor_status->get_voltage(), (float)flywheel_motor->set_voltage);
+        flywheel_motor->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.6;
+        flywheel_motor->give_voltage = PID_calc(&flywheel_motor->speed_pid, flywheel_motor->motor_status->get_voltage(), flywheel_motor->set_voltage);
         flywheel_motor->motor_status->move_voltage(flywheel_motor->give_voltage);
-        printf("gave voltage %d     set voltage %d\n", (int)flywheel_motor->give_voltage, flywheel_motor->motor_status->get_voltage());
-        // flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_MAX_VOLTAGE*0.6);
+        
+        // std::cout<<"low      gave voltage:"<<(int)flywheel_motor->give_voltage<<"      set voltage"<<(float)flywheel_motor->motor_status->get_voltage()/100<<std::endl;
+        // printf("Low speed       gave voltage %d     set voltage %f\n", (int)flywheel_motor->give_voltage, (float)flywheel_motor->motor_status->get_voltage()/100);
+        // flywheel_motor->motor_status->move(127*0.6);
+        pros::lcd::print(4, "low gave %d", flywheel_motor->give_voltage);
+        pros::lcd::print(5, "low voltage %d",flywheel_motor->motor_status->get_voltage());
     }
 }
 /**
@@ -110,7 +129,7 @@ static void flywheel_move(functional_motor_t *flywheel_motor, int flywheel_statu
 //TODO: not finish yet
 static void functional_init(functional_behaviour_t *functional_behaviour_init)
 {
-    static const float paw_pitch_speed_pid[3] = {FLYWHEEL_SPEED_PID_KP, FLYWHEEL_SPEED_PID_KI, FLYWHEEL_SPEED_PID_KD};
+    static const std::int32_t paw_pitch_speed_pid[3] = {FLYWHEEL_SPEED_PID_KP, FLYWHEEL_SPEED_PID_KI, FLYWHEEL_SPEED_PID_KD};
     
     flywheel_motor.set_encoder_units(FUCTION_MOTOR_ENCODER_UNIT);
     functional_behaviour_init->functional_RC = get_remote_control_point();
@@ -121,7 +140,8 @@ static void functional_init(functional_behaviour_t *functional_behaviour_init)
     functional_behaviour_init->gas_gpio = &gas_GPIO;
     functional_behaviour_init->gas_gpio->set_value(HIGH);
 
-    PID_init(&functional_behaviour_init->motor_flywheel.speed_pid, PID_POSITION, paw_pitch_speed_pid, FLYWHEEL_SPEED_PID_MAX_OUT, FLYWHEEL_SPEED_PID_MAX_IOUT);
+    PID_init(&functional_behaviour_init->motor_flywheel.speed_pid, PID_DELTA, paw_pitch_speed_pid, FLYWHEEL_SPEED_PID_MAX_OUT, FLYWHEEL_SPEED_PID_MAX_IOUT);
+    PID_clear(&functional_behaviour_init->motor_flywheel.speed_pid);
     functional_behaviour_init->motor_intake.motor_status->set_voltage_limit(MAX_FLEWHEEL_MOTOR_VOLTAGE);
 }
 /**
@@ -181,6 +201,7 @@ void functional_task_fn(void* param)
         {
             flywheel_status = E_FLYWHEEL_STATUS_SPEED_LOW;
         }
+        // printf("voltage limit:%d", functional_behaviour.motor_flywheel.motor_status->get_voltage_limit());
         flywheel_move(&functional_behaviour.motor_flywheel,flywheel_status);
         
         if (functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_UP) ) {

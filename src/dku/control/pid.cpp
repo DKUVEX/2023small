@@ -1,11 +1,12 @@
 /**
   ****************************(C) COPYRIGHT 2019 DJI****************************
   * @file       pid.cpp
-  * @brief      pidÊµÏÖº¯Êı£¬°üÀ¨³õÊ¼»¯£¬PID¼ÆËãº¯Êı£¬
+  * @brief      pidå®ç°å‡½æ•°ï¼ŒåŒ…æ‹¬åˆå§‹åŒ–ï¼ŒPIDè®¡ç®—å‡½æ•°ï¼Œ
   * @note       
   * @history
   *  Version    Date            Author          Modification
-  *  V1.0.0     Dec-26-2018     RM              1. Íê³É
+  *  V1.0.0     Dec-26-2018     RM              1. å®Œæˆ
+  *  V2.0.0     Feb-24-2023     Tianyi          2. é€‚é…VEX
   *
   @verbatim
   ==============================================================================
@@ -41,15 +42,15 @@
   */
 /**
   * @brief          pid struct data init
-  * @param[out]     pid: PID½á¹¹Êı¾İÖ¸Õë
-  * @param[in]      mode: PID_POSITION:ÆÕÍ¨PID
-  *                 PID_DELTA: ²î·ÖPID
+  * @param[out]     pid: PIDç»“æ„æ•°æ®æŒ‡é’ˆ
+  * @param[in]      mode: PID_POSITION:æ™®é€šPID
+  *                 PID_DELTA: å·®åˆ†PID
   * @param[in]      PID: 0: kp, 1: ki, 2:kd
-  * @param[in]      max_out: pid×î´óÊä³ö
-  * @param[in]      max_iout: pid×î´ó»ı·ÖÊä³ö
+  * @param[in]      max_out: pidæœ€å¤§è¾“å‡º
+  * @param[in]      max_iout: pidæœ€å¤§ç§¯åˆ†è¾“å‡º
   * @retval         none
   */
-void PID_init(pid_type_def *pid, uint8_t mode, const float PID[3], float max_out, float max_iout)
+extern void PID_init(pid_type_def *pid, uint8_t mode, const std::int32_t PID[3], std::int32_t max_out, std::int32_t max_iout)
 {
     if (pid == NULL || PID == NULL)
     {
@@ -61,8 +62,8 @@ void PID_init(pid_type_def *pid, uint8_t mode, const float PID[3], float max_out
     pid->Kd = PID[2];
     pid->max_out = max_out;
     pid->max_iout = max_iout;
-    pid->Dbuf[0] = pid->Dbuf[1] = pid->Dbuf[2] = 0.0f;
-    pid->error[0] = pid->error[1] = pid->error[2] = pid->Pout = pid->Iout = pid->Dout = pid->out = 0.0f;
+    pid->Dbuf[0] = pid->Dbuf[1] = pid->Dbuf[2] = 0;
+    pid->error[0] = pid->error[1] = pid->error[2] = pid->Pout = pid->Iout = pid->Dout = pid->out = 0;
 }
 
 /**
@@ -70,20 +71,22 @@ void PID_init(pid_type_def *pid, uint8_t mode, const float PID[3], float max_out
   * @param[out]     pid: PID struct data point
   * @param[in]      ref: feedback data 
   * @param[in]      set: set point
+  * @return         float
   * @retval         pid out
   */
 /**
-  * @brief          pid¼ÆËã
-  * @param[out]     pid: PID½á¹¹Êı¾İÖ¸Õë
-  * @param[in]      ref: ·´À¡Êı¾İ
-  * @param[in]      set: Éè¶¨Öµ
-  * @retval         pidÊä³ö
+  * @brief          pidè®¡ç®—
+  * @param[out]     pid: PIDç»“æ„æ•°æ®æŒ‡é’ˆ
+  * @param[in]      ref: åé¦ˆæ•°æ®
+  * @param[in]      set: è®¾å®šå€¼
+  * @return         float
+  * @retval         pidè¾“å‡º
   */
-float PID_calc(pid_type_def *pid, float ref, float set)
+std::int32_t PID_calc(pid_type_def *pid, std::int32_t ref, std::int32_t set)
 {
     if (pid == NULL)
     {
-        return 0.0f;
+        return 0;
     }
 
     pid->error[2] = pid->error[1];
@@ -109,7 +112,7 @@ float PID_calc(pid_type_def *pid, float ref, float set)
         pid->Iout = pid->Ki * pid->error[0];
         pid->Dbuf[2] = pid->Dbuf[1];
         pid->Dbuf[1] = pid->Dbuf[0];
-        pid->Dbuf[0] = (pid->error[0] - 2.0f * pid->error[1] + pid->error[2]);
+        pid->Dbuf[0] = (pid->error[0] - 2 * pid->error[1] + pid->error[2]);
         pid->Dout = pid->Kd * pid->Dbuf[0];
         pid->out += pid->Pout + pid->Iout + pid->Dout;
         LimitMax(pid->out, pid->max_out);
@@ -123,8 +126,8 @@ float PID_calc(pid_type_def *pid, float ref, float set)
   * @retval         none
   */
 /**
-  * @brief          pid Êä³öÇå³ı
-  * @param[out]     pid: PID½á¹¹Êı¾İÖ¸Õë
+  * @brief          pid è¾“å‡ºæ¸…é™¤
+  * @param[out]     pid: PIDç»“æ„æ•°æ®æŒ‡é’ˆ
   * @retval         none
   */
 void PID_clear(pid_type_def *pid)
@@ -134,8 +137,8 @@ void PID_clear(pid_type_def *pid)
         return;
     }
 
-    pid->error[0] = pid->error[1] = pid->error[2] = 0.0f;
-    pid->Dbuf[0] = pid->Dbuf[1] = pid->Dbuf[2] = 0.0f;
-    pid->out = pid->Pout = pid->Iout = pid->Dout = 0.0f;
-    pid->fdb = pid->set = 0.0f;
+    pid->error[0] = pid->error[1] = pid->error[2] = 0;
+    pid->Dbuf[0] = pid->Dbuf[1] = pid->Dbuf[2] = 0;
+    pid->out = pid->Pout = pid->Iout = pid->Dout = 0;
+    pid->fdb = pid->set = 0;
 }

@@ -7,6 +7,7 @@
   * @history
   *  Version    Date            Author          Modification
   *  V1.0.0     Feb-17-2023     Tianyi          1. start
+  *  V1.0.1     Feb-26-2023     Tianyi          1. cannot disable build-in Pid, give up custom pid
   *
   @verbatim
   ==============================================================================

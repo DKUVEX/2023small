@@ -79,5 +79,4 @@ void sensor_task_fn(void* param);
   */
 sensor_data_t *get_sensor_data_point(void);
 
-
 #endif

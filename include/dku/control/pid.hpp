@@ -6,7 +6,6 @@
   * @history
   *  Version    Date            Author          Modification
   *  V1.0.0     Dec-26-2018     RM              1. 完成
-  *  V2.0.0     Feb-24-2023     Tianyi          2. 适配VEX
   *
   @verbatim
   ==============================================================================
@@ -18,7 +17,7 @@
 #ifndef PID_H
 #define PID_H
 #include <cstdint>
-#define NULL 0
+#define NULL_PID 0
 enum PID_MODE
 {
     PID_POSITION = 0,
@@ -29,22 +28,22 @@ typedef struct
 {
     std::uint8_t mode;
     //PID 三参数 PID 3 parameters 
-    std::int32_t Kp;
-    std::int32_t Ki;
-    std::int32_t Kd;
+    float Kp;
+    float Ki;
+    float Kd;
 
-    std::int32_t max_out;  //最大输出 max output
-    std::int32_t max_iout; //最大积分输出 max integrate output
+    float max_out;  //最大输出 max output
+    float max_iout; //最大积分输出 max integrate output
 
-    std::int32_t set;
-    std::int32_t fdb;
+    float set;
+    float fdb;
 
-    std::int32_t out;
-    std::int32_t Pout;
-    std::int32_t Iout;
-    std::int32_t Dout;
-    std::int32_t Dbuf[3];  //微分项 0最新 1上一次 2上上次 Differential item 0 latest 1 last 2 last last
-    std::int32_t error[3]; //误差项 0最新 1上一次 2上上次 Error term 0 latest 1 last 2 last last
+    float out;
+    float Pout;
+    float Iout;
+    float Dout;
+    float Dbuf[3];  //微分项 0最新 1上一次 2上上次 Differential item 0 latest 1 last 2 last last
+    float error[3]; //误差项 0最新 1上一次 2上上次 Error term 0 latest 1 last 2 last last
 
 } pid_type_def;
 /**
@@ -67,7 +66,7 @@ typedef struct
   * @param[in]      max_iout: pid最大积分输出
   * @retval         none
   */
-extern void PID_init(pid_type_def *pid, uint8_t mode, const std::int32_t PID[3], std::int32_t max_out, std::int32_t max_iout);
+extern void PID_init(pid_type_def *pid, uint8_t mode, const float PID[3], float max_out, float max_iout);
 
 /**
   * @brief          pid calculate 
@@ -83,7 +82,7 @@ extern void PID_init(pid_type_def *pid, uint8_t mode, const std::int32_t PID[3],
   * @param[in]      set: 设定值
   * @retval         pid输出
   */
-extern std::int32_t PID_calc(pid_type_def *pid, std::int32_t ref, std::int32_t set);
+extern float PID_calc(pid_type_def *pid, float ref, float set);
 
 /**
   * @brief          pid out clear

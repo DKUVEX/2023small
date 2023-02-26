@@ -24,6 +24,10 @@
 #include "pros/misc.h"
 #include <cstdint>
 
+#define functional_total_pid_clear(functional_clear)                                                   	 \
+{                                                                                          \
+    PID_clear(&(functional_clear)->motor_flywheel.motor_speed_pid);                    	 		 \
+}
 
 functional_behaviour_t functional_behaviour;
 pros::Motor intake_motor(INTAKE_MOTOR_PORT, FUNCTION_MOTOR_GEAR_RATIO, false, FUCTION_MOTOR_ENCODER_UNIT);
@@ -125,6 +129,7 @@ static void flywheel_move(functional_motor_t *flywheel_motor, functional_motor_t
 
         }
     }
+    std::cout << "Motor Voltage Limit: " << flywheel_motor->motor_status->get_voltage_limit();
 }
 /**
   * @brief          "functional_behaviour" valiable initialization, include pid initialization, remote control data point initialization, chassis motors
@@ -168,22 +173,33 @@ static void functional_init(functional_behaviour_t *functional_behaviour_init)
   */
 void functional_task_fn(void* param)
 {
-
     std::cout << "Functional task runs" << std::endl;
     pros::Task::delay(FUNCTIONAL_TASK_INIT_TIME);
     functional_init(&functional_behaviour);
     static int flywheel_status = E_FLYWHEEL_STATUS_SPEED_LOW;
     std::uint32_t now = pros::millis();
     while (true) {
-        if ((functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R1))
-            && !functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+        if ((functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R1)))
         {
-            functional_behaviour.motor_intake.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED);
-        }
-        else if ((functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R2))
-                 && !functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+            if (!functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+            {
+                functional_behaviour.motor_intake.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED);
+            }
+            else 
+            {
+                flywheel_status = E_FLYWHEEL_STATUS_SPEED_HIGH;
+            }
+        }    
+        else if ((functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R2)))
         {
-            functional_behaviour.motor_intake.motor_status->move_velocity(-FUNCTIONAL_MOTOR_MAX_SPEED);
+            if (!functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+            {
+                functional_behaviour.motor_intake.motor_status->move_velocity(-FUNCTIONAL_MOTOR_MAX_SPEED);
+            }
+            else 
+            {
+                flywheel_status = E_FLYWHEEL_STATUS_SPEED_LOW;
+            }
         }
         else if (!(functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R2))
                  && !(functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R1)))

@@ -29,6 +29,9 @@
 //functional task control time  2ms
 //竞技任务控制间隔 2ms
 #define FUNCTIONAL_CONTROL_TIME_MS      2
+//flywheel max motor control current
+//飞轮最大can发送电流值
+#define MAX_FLYWHEEL_MOTOR_VOLTAGE 12000.0f
 
 #define INTAKE_MOTOR_PORT               7
 #define FLYWHEEL_MOTOR_PORT             6

@@ -92,6 +92,11 @@ void chassis_task_fn(void* param)
         chassis_move.motor_chassis[3].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
                                                         +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
                                                         -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
+
+        // printf("%d\n",chassis_motor_voltage[0]);
+        // for (int i=0; i<=3; i++) {
+        //     chassis_move.motor_chassis[i].motor_status->move(chassis_motor_voltage[i]);
+        // }
         pros::Task::delay_until(&now, CHASSIS_CONTROL_TIME_MS);
     }
 }

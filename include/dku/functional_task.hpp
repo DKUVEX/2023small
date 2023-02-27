@@ -16,8 +16,8 @@
   @endverbatim
   ****************************(C) COPYRIGHT 2023 Blue Bear****************************
 */
-#ifndef FUNCTIONAL_task_H
-#define FUNCTIONAL_task_H
+#ifndef FUNCTIONAL_TASK_H
+#define FUNCTIONAL_TASK_H
 
 #include "api.h"
 #include "dku/remote_control.hpp"
@@ -86,6 +86,8 @@ typedef struct {
     functional_motor_t motor_roller;   // motor data.电机数据
     pros::ADIPort *gas_gpio;           // control gas
 }functional_behaviour_t;
+
+static int flywheel_status = E_FLYWHEEL_STATUS_SPEED_HIGH;
 
 /**
   * @brief          finctional task, osDelay FUNCTIONAL_CONTROL_TIME_MS (2ms) 

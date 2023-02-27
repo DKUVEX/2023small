@@ -34,6 +34,8 @@ void initialize() {
                 TASK_STACK_DEPTH_DEFAULT, "chassis_task");
     pros::Task functional_task (functional_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
                 TASK_STACK_DEPTH_DEFAULT, "functional_task");
+    pros::Task rc_update_task (rc_update_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
+                TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
 
 }
 

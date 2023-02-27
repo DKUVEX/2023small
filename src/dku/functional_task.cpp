@@ -19,11 +19,10 @@
 */
 
 #include "dku/functional_task.hpp"
-#include "control/pid.hpp"
+#include "dku/control/pid.hpp"
 #include "pros/adi.h"
 #include "pros/misc.h"
 #include <cstdint>
-
 
 functional_behaviour_t functional_behaviour;
 pros::Motor intake_motor(INTAKE_MOTOR_PORT, FUNCTION_MOTOR_GEAR_RATIO, false, FUCTION_MOTOR_ENCODER_UNIT);
@@ -112,8 +111,8 @@ static void flywheel_move(functional_motor_t *flywheel_motor, functional_motor_t
         flywheel_speed_control_withoutpid(flywheel_motor_2, FLYWHEEL_CONTROL_ERROR);        
     }
     else if (flywheel_status == E_FLYWHEEL_STATUS_SPEED_LOW) {
-        flywheel_motor->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.6;
-        flywheel_motor_2->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.6;
+        flywheel_motor->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.35;
+        flywheel_motor_2->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.35;
         flywheel_speed_control_withoutpid(flywheel_motor, FLYWHEEL_CONTROL_ERROR);
         flywheel_speed_control_withoutpid(flywheel_motor_2, FLYWHEEL_CONTROL_ERROR);
     }
@@ -164,7 +163,6 @@ void functional_task_fn(void* param)
     std::cout << "Functional task runs" << std::endl;
     pros::Task::delay(FUNCTIONAL_TASK_INIT_TIME);
     functional_init(&functional_behaviour);
-    static int flywheel_status = E_FLYWHEEL_STATUS_SPEED_LOW;
     std::uint32_t now = pros::millis();
     while (true) {
         if ((functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R1))
@@ -184,7 +182,7 @@ void functional_task_fn(void* param)
         }        
         functional_behaviour.motor_roller.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED
                                                                      *functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_Y));
-        functional_behaviour.motor_index.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED*0.6
+        functional_behaviour.motor_index.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED*0.5
                                                                      *functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L1));
         if(functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_B)) 
         {

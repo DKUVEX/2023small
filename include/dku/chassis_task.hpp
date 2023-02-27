@@ -51,6 +51,7 @@ typedef struct {
 }chassis_move_t;
 
 
+static std::int32_t chassis_motor_voltage[4] = {0,0,0,0};
 /**
   * @brief          chassis task, osDelay CHASSIS_CONTROL_TIME_MS (2ms) 
   * @param[in]      param: null

@@ -1,0 +1,147 @@
+[33mcommit 552a8e86bbfb12c59d417911e51884af2f8233f0[m[33m ([m[1;36mHEAD -> [m[1;32mdetail_functional_modify[m[33m)[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Mon Feb 27 17:09:17 2023 +0800
+
+    debug:make error
+
+[33mcommit 7df8396a09f616a3e504c641abc1c891ac6e7ccd[m
+Merge: eb7cfb2 c921bd0
+Author: Rogue <78423508+rogue-shadowdancer@users.noreply.github.com>
+Date:   Sun Feb 26 21:28:56 2023 +0800
+
+    Merge pull request #14 from DKUVEX/function_dev
+    
+    Function dev
+
+[33mcommit c921bd05a24f768fa48d5b74f7c66bfa47134ebc[m[33m ([m[1;31morigin/function_dev[m[33m, [m[1;32mfunction_dev[m[33m)[m
+Merge: 9e89b2a 7a0e3f9
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Sun Feb 26 21:06:02 2023 +0800
+
+    Merge branch 'function_dev' of https://github.com/rogue-shadowdancer/2023small into function_dev
+
+[33mcommit 9e89b2a41e07f450192aafe58d1dfd99c39e5eff[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Sun Feb 26 21:02:55 2023 +0800
+
+    add:fly wheel control
+
+[33mcommit d5bd4f39acad1f3f71bf6961a71ff30d26b53bc4[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Sun Feb 26 20:50:56 2023 +0800
+
+    debug:backup
+
+[33mcommit f6e0828629c1d87fcab51e9b3f447555fdad4296[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Sat Feb 25 01:21:46 2023 +0800
+
+    tmp:test pid error
+
+[33mcommit dea5876755dfb532359115742f2651eeec13b3c9[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Fri Feb 24 21:29:07 2023 +0800
+
+    tmp:control
+
+[33mcommit eb7cfb28f15d4cc9bcd16b9be801bd6b8d1db347[m
+Merge: a9aa7a3 4b4766d
+Author: rogue-shadowdancer <78423508+rogue-shadowdancer@users.noreply.github.com>
+Date:   Sun Feb 19 14:52:43 2023 +0800
+
+    Merge pull request #8 from DKUVEX/gps_data
+    
+    Gps data
+
+[33mcommit a9aa7a31af78dc0b11ce0369077194868e1a50e3[m
+Merge: f51909d bc8c55a
+Author: rogue-shadowdancer <78423508+rogue-shadowdancer@users.noreply.github.com>
+Date:   Sun Feb 19 14:52:08 2023 +0800
+
+    Merge pull request #7 from DKUVEX/chassis_motors
+    
+    Chassis motors
+
+[33mcommit ffbe22d24937afd20e098b7e5eeb95c51a6a70e3[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Sat Feb 18 22:00:00 2023 +0800
+
+    add:pid test
+
+[33mcommit ae0f6a8bde9e17527c904340fcf0d675656c0f2b[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Sat Feb 18 21:39:08 2023 +0800
+
+    pid rdy test
+
+[33mcommit 7a0e3f90de7375f24a453dec3dd22217dd73d46a[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Sat Feb 18 16:58:45 2023 +0800
+
+    tmp:pid
+
+[33mcommit f4e8d01391ba927f221480b1841c7a55f1b9cf8e[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Sat Feb 18 11:17:22 2023 +0800
+
+    fix:control modify
+
+[33mcommit b8c322932dc507a73174b7989a71ca621779d8c8[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Fri Feb 17 23:22:28 2023 +0800
+
+    add:gas gpio rdy test
+
+[33mcommit 17c271f1b54b8e849ad55f75c03ff8e7ee6dabd6[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Fri Feb 17 22:18:30 2023 +0800
+
+    tmp:for shanghai_training
+
+[33mcommit 4b4766d0e19f02050f1c184b694e9ec85569e0e6[m[33m ([m[1;31morigin/gps_data[m[33m, [m[1;32mgps_data[m[33m)[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Fri Feb 17 17:19:20 2023 +0800
+
+    add:finish test
+
+[33mcommit b35a07ca5eafd5b2570f3d42d433c08d6a7d7803[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Fri Feb 17 16:35:40 2023 +0800
+
+    add:sensor data fetch rdy test
+
+[33mcommit bc8c55a6c42a2fc4278d4a2935148dfe78836312[m[33m ([m[1;31morigin/chassis_motors[m[33m, [m[1;32mchassis_motors[m[33m)[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Fri Feb 17 14:22:55 2023 +0800
+
+    Fix:fix rotate wrong direction
+
+[33mcommit 18711b11306e61e98e32c061ae11986d86f9fc5a[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Fri Feb 17 14:08:49 2023 +0800
+
+    add: build structure
+
+[33mcommit c271a4aef1b765551f9f033822cc73916106c15f[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Tue Feb 14 14:25:57 2023 +0800
+
+    style modify
+
+[33mcommit 7443596c12e0e53f17a73bea39ff4eb175b0dfdb[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Sun Feb 12 22:14:29 2023 +0800
+
+    almost ok motor reverse need to be done
+
+[33mcommit 32757cad4afaaf18e2f67844b8c0f3326c2d7dad[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Sun Feb 12 21:32:33 2023 +0800
+
+    finish chassis rdy test
+
+[33mcommit f51909d81c7394268640768c266a87a1be89bfe0[m
+Author: ãrogue <shadow_rogue@qq.com>
+Date:   Fri Feb 3 19:30:27 2023 +0800
+
+    first commit

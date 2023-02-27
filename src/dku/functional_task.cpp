@@ -66,6 +66,21 @@ static void functional_init(functional_behaviour_t* functional_behaviour_init);
 static void flywheel_move(functional_motor_t *flywheel_motor, functional_motor_t *flywheel_motor_2, int flywheel_status);
 
 /**
+ * @brief           速度控制函数，避开pid
+ * @param[in,out]   flywheel_motor: 电机指针
+ * @param[in]       speed_error: 加速减速误差
+ * @retval         
+ */
+/**
+ * @brief           speed control, without pid
+ * @param[in,out]   flywheel_motor: motor point
+ * @param[in]       speed_error: error of accelerate and deaccelerate
+ * @retval         
+ */
+void flywheel_speed_control_withoutpid(functional_motor_t *motor, std::int32_t speed_error);
+
+
+/**
   * @brief          concrol the behaviour of fly wheel
   * @param[out]     flywheel_motor: "flywheel_motor" valiable point
   * @param[out]     flywheel_motor_2: "flywheel_motor_2" 变量指针
@@ -93,37 +108,14 @@ static void flywheel_move(functional_motor_t *flywheel_motor, functional_motor_t
     else if (flywheel_status == E_FLYWHEEL_STATUS_SPEED_HIGH) {
         flywheel_motor->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.5;
         flywheel_motor_2->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.5;
-        if ((flywheel_motor->motor_status->get_voltage()-flywheel_motor->set_voltage) > FLYWHEEL_CONTROL_ERROR) {
-            flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_ZERO_VOLTAGE);
-            flywheel_motor_2->motor_status->move_voltage(FUNCTIONAL_MOTOR_ZERO_VOLTAGE);
-        }
-        else if ((flywheel_motor->motor_status->get_voltage()-flywheel_motor->set_voltage) < FLYWHEEL_CONTROL_ERROR) {
-            flywheel_motor->motor_status->move_voltage(MAX_FLEWHEEL_MOTOR_VOLTAGE);        
-            flywheel_motor_2->motor_status->move_voltage(MAX_FLEWHEEL_MOTOR_VOLTAGE);        
-        } 
-        else {
-            flywheel_motor->motor_status->move_voltage(flywheel_motor->set_voltage);
-            flywheel_motor_2->motor_status->move_voltage(flywheel_motor->set_voltage);
-        }
+        flywheel_speed_control_withoutpid(flywheel_motor, FLYWHEEL_CONTROL_ERROR);
+        flywheel_speed_control_withoutpid(flywheel_motor_2, FLYWHEEL_CONTROL_ERROR);        
     }
     else if (flywheel_status == E_FLYWHEEL_STATUS_SPEED_LOW) {
         flywheel_motor->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.6;
         flywheel_motor_2->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.6;
-        if ((flywheel_motor->motor_status->get_voltage()-flywheel_motor->set_voltage) > FLYWHEEL_CONTROL_ERROR) {
-            flywheel_motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_ZERO_VOLTAGE);
-            flywheel_motor_2->motor_status->move_voltage(FUNCTIONAL_MOTOR_ZERO_VOLTAGE);
-
-        }
-        else if ((flywheel_motor->motor_status->get_voltage()-flywheel_motor->set_voltage) < FLYWHEEL_CONTROL_ERROR) {
-            flywheel_motor->motor_status->move_voltage(MAX_FLEWHEEL_MOTOR_VOLTAGE);        
-            flywheel_motor_2->motor_status->move_voltage(MAX_FLEWHEEL_MOTOR_VOLTAGE);        
-
-        } 
-        else {
-            flywheel_motor->motor_status->move_voltage(flywheel_motor->set_voltage);
-            flywheel_motor_2->motor_status->move_voltage(flywheel_motor->set_voltage);
-
-        }
+        flywheel_speed_control_withoutpid(flywheel_motor, FLYWHEEL_CONTROL_ERROR);
+        flywheel_speed_control_withoutpid(flywheel_motor_2, FLYWHEEL_CONTROL_ERROR);
     }
 }
 /**
@@ -192,7 +184,7 @@ void functional_task_fn(void* param)
         }        
         functional_behaviour.motor_roller.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED
                                                                      *functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_Y));
-        functional_behaviour.motor_index.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED
+        functional_behaviour.motor_index.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED*0.6
                                                                      *functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L1));
         if(functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_B)) 
         {
@@ -217,5 +209,29 @@ void functional_task_fn(void* param)
             functional_behaviour.gas_gpio->set_value(FUNCTIONAL_LIFT_LOW_STATE);
         }
         pros::Task::delay_until(&now, FUNCTIONAL_CONTROL_TIME_MS);
+    }
+}
+/**
+ * @brief           速度控制函数，避开pid
+ * @param[in,out]   flywheel_motor: 电机指针
+ * @param[in]       speed_error: 加速减速误差
+ * @retval         
+ */
+/**
+ * @brief           speed control, without pid
+ * @param[in,out]   flywheel_motor: motor point
+ * @param[in]       speed_error: error of accelerate and deaccelerate
+ * @retval         
+ */
+void flywheel_speed_control_withoutpid(functional_motor_t *motor, std::int32_t speed_error)
+{
+    if ((motor->motor_status->get_voltage()-motor->set_voltage) > speed_error) {
+        motor->motor_status->move_voltage(FUNCTIONAL_MOTOR_ZERO_VOLTAGE);
+    }
+    else if ((motor->motor_status->get_voltage()-motor->set_voltage) < speed_error) {
+        motor->motor_status->move_voltage(MAX_FLEWHEEL_MOTOR_VOLTAGE);        
+    } 
+    else {
+        motor->motor_status->move_voltage(motor->set_voltage);
     }
 }

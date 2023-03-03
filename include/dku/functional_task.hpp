@@ -68,6 +68,29 @@ typedef enum flywheel_status_e
     E_FLYWHEEL_STATUS_SPEED_HIGH,
 } flywheel_status_e_t;
 
+typedef enum functional_motor_status_e
+{
+    E_FUNCTIONAL_MOTOR_STATUS_OFF = 0,
+    E_FUNCTIONAL_MOTOR_STATUS_FORWARD,
+    E_FUNCTIONAL_MOTOR_STATUS_BACKWARD,
+} functional_motor_status_e_t;
+
+typedef enum functional_adi_status_e
+{
+    E_FUNCTIONAL_ADI_STATUS_OFF = 0,
+    E_FUNCTIONAL_ADI_STATUS_PORT_HIGH,
+    E_FUNCTIONAL_ADI_STATUS_PORT_LOW,
+} functional_adi_status_e_t;
+
+typedef struct {
+    std::int32_t flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
+    std::int32_t index_motor;
+    std::int32_t intake_motor;
+    std::int32_t roller_motor;
+    std::int32_t gas_gpio;
+    std::int32_t extension_gpio;
+}functional_device_status_t;
+
 typedef struct {
     pros::Motor *motor_status;
     float speed;
@@ -87,11 +110,7 @@ typedef struct {
     functional_motor_t motor_roller;   // motor data.电机数据
     pros::ADIPort *gas_gpio;           // control gas
     pros::ADIPort *extension_gpio;           // control extension
-    std::uint32_t start_time;
-    std::uint32_t now_time;// used for calc extension time
 }functional_behaviour_t;
-
-static int flywheel_status = E_FLYWHEEL_STATUS_SPEED_HIGH;
 
 /**
   * @brief          finctional task, osDelay FUNCTIONAL_CONTROL_TIME_MS (2ms) 
@@ -104,5 +123,12 @@ static int flywheel_status = E_FLYWHEEL_STATUS_SPEED_HIGH;
   * @retval         none
   */
 void functional_task_fn(void* param);
+
+/**
+ * @brief           get functional device status. off/forward/backward
+ * @param[in]       none
+ * @retval          functional device status point
+ */
+functional_device_status_t *get_functional_device_status(void);
 
 #endif

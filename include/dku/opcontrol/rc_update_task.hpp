@@ -21,6 +21,7 @@
 #include "api.h"
 #include "dku/remote_control.hpp"
 #include "dku/chassis_task.hpp"
+#include "dku/functional_task.hpp"
 #include <cstdint>
 
 //in the beginning of task ,wait a time
@@ -29,10 +30,16 @@
 //functional task control time  2ms
 //竞技任务控制间隔 2ms
 #define RC_UPDATE_CONTROL_TIME_MS      2
+#define FUNCTIONAL_LIFT_HIGH_STATE LOW
+#define FUNCTIONAL_LIFT_LOW_STATE HIGH
 
 typedef struct {
     pros::Controller *update_RC; //遥控器指针, the point to remote control
     std::int32_t *chassis_voltage;
+    functional_device_status_t *functional_status;
+    std::uint32_t now_time;
+    std::uint32_t op_start_time;
+    bool op_start_flag = false;
 }rc_update_t;
 // extern std::int32_t chassis_motor_voltage[4];
 /**

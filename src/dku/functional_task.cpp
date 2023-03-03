@@ -188,6 +188,9 @@ void functional_task_fn(void* param)
         else if (functional_devices.roller_motor == E_FUNCTIONAL_MOTOR_STATUS_OFF) {
             functional_behaviour.motor_roller.motor_status->move_velocity(FUNCTIONAL_MOTOR_ZERO_SPEED);
         }
+        else if (functional_devices.roller_motor == E_FUNCTIONAL_MOTOR_STATUS_BACKWARD) {
+            functional_behaviour.motor_roller.motor_status->move_velocity(-FUNCTIONAL_MOTOR_MAX_SPEED);
+        }
         if (functional_devices.index_motor == E_FUNCTIONAL_MOTOR_STATUS_FORWARD) {
             functional_behaviour.motor_index.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED*0.5);
         }

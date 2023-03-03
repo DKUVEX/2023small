@@ -80,7 +80,7 @@ void rc_update_task_fn(void* param)
             if ((controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R1))
                 && !controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L2))
             {
-                controller_update.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+                controller_update.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
                 controller_update.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
             }
             else if ((controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R2))

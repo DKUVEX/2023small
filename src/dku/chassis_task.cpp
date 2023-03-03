@@ -81,20 +81,6 @@ void chassis_task_fn(void* param)
     std::uint32_t now = pros::millis();
     while (true) {
         // Do opcontrol things
-        // chassis_move.motor_chassis[0].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
-        //                                                 +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
-        //                                                 +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
-        // chassis_move.motor_chassis[1].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
-        //                                                 -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
-        //                                                 +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
-        // chassis_move.motor_chassis[2].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
-        //                                                 -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
-        //                                                 -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
-        // chassis_move.motor_chassis[3].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
-        //                                                 +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
-        //                                                 -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
-
-        // printf("%d\n",chassis_motor_voltage[0]);
         for (int i=0; i<=3; i++) {
             chassis_move.motor_chassis[i].motor_status->move(chassis_motor_voltage[i]);
         }

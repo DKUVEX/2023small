@@ -19,16 +19,26 @@
 #define AUTO_TASK_H
 
 #include "api.h"
-
+#include "dku/functional_task.hpp"
+#include "dku/chassis_task.hpp"
+#include <cmath>
 //in the beginning of task ,wait a time
 //任务开始空闲一段时间
 #define AUTO_TASK_INIT_TIME       300
 //auto task control time  2ms
 //自动任务控制间隔 2ms
 #define AUTO_TASK_TIME_MS          2
+#define PI (3.1415926535)
+typedef struct {
+    double current_x;
+    double current_y;
+    double current_dir;
+}current_status_t;
 
 typedef struct {
     std::int32_t *chassis_voltage;
+    functional_device_status_t *functional_status;
+    current_status_t current_pos;
 }auto_control_t;
 
 

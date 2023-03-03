@@ -16,50 +16,156 @@
  * ****************************(C) COPYRIGHT 2023 Blue Bear****************************
  */
 #include "dku/auto/auto_task.hpp"
-#include "dku/chassis_task.hpp"
+#include "dku/functional_task.hpp"
+#include "pros/rtos.hpp"
+#include <cstdint>
+
 
 auto_control_t auto_control;
 
 /**
  * @brief           auto control init
  * @param[in,out]   init:
- * @retval         null
+ * @retval          null
  */
 void auto_init(auto_control_t* init);
 
 
 /**
- * @brief           let robot move to specific point
- * @param[in]       current_x: current x position
- * @param[in]       current_y: current y position
+ * @brief           let robot turn to specific point
  * @param[in]       target_x: aimed position x
  * @param[in]       target_y: aimed position y
- * @param[out]      move: give chassis voltage
- * @retval         
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval          null
  */
-void move_to(double current_x, double current_y, double target_x, double target_y, auto_control_t* move);
+void turn_to(double target_x, double target_y, auto_control_t* turn);
+
+/**
+ * @brief           let robot move to specific point
+ * @param[in]       target_x: aimed position x
+ * @param[in]       target_y: aimed position y
+ * @param[in,out]   move: find current position,give chassis voltage
+ * @retval          null
+ */
+void move_to(double target_x, double target_y, auto_control_t* move);
+
+/**
+ * @brief           kick out 3 plates
+ * @param[in,out]   kick: change the voltage of index
+ * @retval          null
+ */
+void kick_out(auto_control_t* kick);
+
 
 /**
  * @brief           auto control init
  * @param[in,out]   init:
- * @retval         null
+ * @retval          null
  */
 void auto_init(auto_control_t* init)
 {
     init->chassis_voltage = get_chassis_voltage_point();
+    init->functional_status = get_functional_device_status();
+    pros::Mutex init_mutex;
+    init_mutex.take();
+    {
+        init->functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
+        init->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+    }
+    init_mutex.give();
 }
 
 /**
-  * @brief          finctional task, osDelay AUTO_TASK_TIME_MS (2ms) 
+ * @brief           let robot turn to specific point
+ * @param[in]       target_x: aimed position x
+ * @param[in]       target_y: aimed position y
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval         
+ */
+void turn_to(double target_x, double target_y, auto_control_t* turn)
+{
+    std::int32_t analog_right_x = 0; //simulate the joystick
+    double rad = atan2f((target_x - turn->current_pos.current_x), (target_y - turn->current_pos.current_y));
+    double angle = rad*(180/PI);
+    while (abs((int)(turn->current_pos.current_dir - angle))>=1) {
+        analog_right_x = 127;
+        pros::Mutex turn_mutex;
+        turn_mutex.take();
+        {
+            turn->chassis_voltage[0] = analog_right_x;
+            turn->chassis_voltage[1] = analog_right_x;
+            turn->chassis_voltage[2] = -analog_right_x;
+            turn->chassis_voltage[3] = -analog_right_x;
+        }
+        turn_mutex.give();
+    }
+}
+
+/**
+ * @brief           let robot move to specific point
+ * @param[in]       target_x: aimed position x
+ * @param[in]       target_y: aimed position y
+ * @param[in,out]   move: find current position,give chassis voltage
+ * @retval         
+ */
+void move_to(double target_x, double target_y, auto_control_t* move)
+{
+    turn_to(target_x, target_y, move);
+    std::int32_t analog_left_y = 0; //simulate the joystick
+    double distance = sqrt(pow((target_x-move->current_pos.current_x),2) + pow((target_y-move->current_pos.current_y),2));
+    while (abs((int)distance)>=0.05) {
+        int analog_left_y = 127;
+        pros::Mutex move_mutex;
+        move_mutex.take();
+        {
+            move->chassis_voltage[0] = analog_left_y;
+            move->chassis_voltage[1] = analog_left_y;
+            move->chassis_voltage[2] = analog_left_y;
+            move->chassis_voltage[3] = analog_left_y;
+        }
+        move_mutex.give();
+    }
+}
+
+
+/**
+  * @brief          auto task, osDelay AUTO_TASK_TIME_MS (2ms) 
   * @param[in]      param: null
   * @retval         none
   */
 /**
-  * @brief          竞技任务，间隔 AUTO_TASK_TIME_MS 2ms
+  * @brief          自动任务，间隔 AUTO_TASK_TIME_MS 2ms
   * @param[in]      param: 空
   * @retval         none
   */
 void auto_task_fn(void* param)
 {
-
+    std::cout << "auto task runs" << std::endl;
+    pros::Task::delay(AUTO_TASK_INIT_TIME);
+    auto_init(&auto_control);
+    std::uint32_t now = pros::millis();
+    while (true) {
+        
+        pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
+    }
+}
+/**
+ * @brief           kick out 3 plates
+ * @param[in,out]   kick: change the voltage of index
+ * @retval          null
+ */
+void kick_out(auto_control_t* kick)
+{
+    pros::Mutex kick_mutex;
+    kick_mutex.take();
+    {
+        kick->functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+    }
+    kick_mutex.give();
+    pros::delay(5000);
+    kick_mutex.take();
+    {
+        kick->functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    }
+    kick_mutex.give();
 }

@@ -170,6 +170,7 @@ void functional_task_fn(void* param)
     functional_init(&functional_behaviour);
     std::uint32_t now = pros::millis();
     while (true) {
+        //TODO: lots of ugly repeat codes
         if (functional_devices.intake_motor == E_FUNCTIONAL_MOTOR_STATUS_FORWARD)
         {
             functional_behaviour.motor_intake.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED);

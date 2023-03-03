@@ -33,6 +33,8 @@ pros::Motor flywheel_motor(FLYWHEEL_MOTOR_PORT,FLYWHEEL_MOTOR_GEAR_RATIO, true, 
 pros::Motor flywheel_motor_2(FLYWHEEL_MOTOR_2_PORT,FLYWHEEL_MOTOR_GEAR_RATIO, false, FLYWHEEL_MOTOR_ENCODER_UNIT); //fly wheel do not have gear
 
 pros::ADIPort gas_GPIO(GAS_GPIO_PORT, pros::E_ADI_DIGITAL_OUT);
+pros::ADIPort extension_GPIO(EXTENSION_GPIO_PORT, pros::E_ADI_DIGITAL_OUT);
+
 /**
   * @brief          "functional_behaviour" valiable initialization, include pid initialization, remote control data point initialization, chassis motors
   *                 data point initialization, gimbal motor data point initialization, and gyro sensor angle point initialization.
@@ -141,7 +143,9 @@ static void functional_init(functional_behaviour_t *functional_behaviour_init)
     functional_behaviour_init->motor_flywheel.motor_status = &flywheel_motor;
     functional_behaviour_init->motor_flywheel_2.motor_status = &flywheel_motor_2;
     functional_behaviour_init->gas_gpio = &gas_GPIO;
-    functional_behaviour_init->gas_gpio->set_value(HIGH);
+    functional_behaviour_init->gas_gpio->set_value(FUNCTIONAL_LIFT_LOW_STATE);
+    functional_behaviour_init->extension_gpio = &extension_GPIO;
+    functional_behaviour_init->extension_gpio->set_value(FUNCTIONAL_LIFT_HIGH_STATE);
 
     PID_init(&functional_behaviour_init->motor_flywheel.speed_pid, PID_DELTA, flywheel_speed_pid, FLYWHEEL_SPEED_PID_MAX_OUT, FLYWHEEL_SPEED_PID_MAX_IOUT);
     PID_clear(&functional_behaviour_init->motor_flywheel.speed_pid);
@@ -205,6 +209,15 @@ void functional_task_fn(void* param)
         }
         if (functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) ) {
             functional_behaviour.gas_gpio->set_value(FUNCTIONAL_LIFT_LOW_STATE);
+        }
+        if (functional_behaviour.functional_RC->get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) ) {
+            functional_behaviour.now_time = pros::millis();
+            if ((functional_behaviour.now_time - functional_behaviour.start_time)>60*1000) {
+                functional_behaviour.extension_gpio->set_value(FUNCTIONAL_LIFT_LOW_STATE);
+            }
+        }
+        if (pros::competition::is_connected ()) {
+            functional_behaviour.start_time = pros::millis();
         }
         pros::Task::delay_until(&now, FUNCTIONAL_CONTROL_TIME_MS);
     }

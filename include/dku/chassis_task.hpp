@@ -51,7 +51,6 @@ typedef struct {
 }chassis_move_t;
 
 
-static std::int32_t chassis_motor_voltage[4] = {0,0,0,0};
 /**
   * @brief          chassis task, osDelay CHASSIS_CONTROL_TIME_MS (2ms) 
   * @param[in]      param: null
@@ -63,5 +62,15 @@ static std::int32_t chassis_motor_voltage[4] = {0,0,0,0};
   * @retval         none
   */
 void chassis_task_fn(void* param);
-
+/**
+  * @brief          get chassis voltage point
+  * @param[in]      none
+  * @retval         chassis voltage data point
+  */
+/**
+  * @brief          获取底盘电压数据指针
+  * @param[in]      none
+  * @retval         底盘电压数据指针
+  */
+std::int32_t *get_chassis_voltage_point(void);
 #endif

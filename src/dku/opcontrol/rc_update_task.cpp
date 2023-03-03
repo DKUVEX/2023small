@@ -1,4 +1,6 @@
 #include "dku/opcontrol/rc_update_task.hpp"
+#include "dku/chassis_task.hpp"
+#include "pros/rtos.hpp"
 
 rc_update_t controller_update;
 
@@ -31,6 +33,7 @@ static void rc_update_init(rc_update_t* init);
 static void rc_update_init(rc_update_t* init)
 {
     init->update_RC = get_remote_control_point();
+    init->chassis_voltage = get_chassis_voltage_point();
 }
 
 /**
@@ -51,18 +54,21 @@ void rc_update_task_fn(void* param)
     std::uint32_t now = pros::millis();
     while (true) {
         // Do opcontrol things
-        chassis_motor_voltage[0] = controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
+        pros::Mutex chassis_mutex;
+        chassis_mutex.take();
+        controller_update.chassis_voltage[0] = controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
                                     +controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
                                     +controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-        chassis_motor_voltage[1] = controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
+        controller_update.chassis_voltage[1] = controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
                                     -controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
                                     +controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-        chassis_motor_voltage[2] = controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
+        controller_update.chassis_voltage[2] = controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
                                     -controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
                                     -controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);        
-        chassis_motor_voltage[3] = controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
+        controller_update.chassis_voltage[3] = controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
                                     +controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
                                     -controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);        
+        chassis_mutex.give();
         // printf("%d\n", chassis_motor_voltage[0] );
         pros::Task::delay_until(&now, CHASSIS_CONTROL_TIME_MS);
     }

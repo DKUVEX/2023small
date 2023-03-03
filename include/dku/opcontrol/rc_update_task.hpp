@@ -32,6 +32,7 @@
 
 typedef struct {
     pros::Controller *update_RC; //遥控器指针, the point to remote control
+    std::int32_t *chassis_voltage;
 }rc_update_t;
 // extern std::int32_t chassis_motor_voltage[4];
 /**

@@ -36,6 +36,7 @@
 #define INDEX_MOTOR_PORT                10
 #define ROLLER_MOTOR_PORT               4
 #define GAS_GPIO_PORT                   1 // port A
+#define EXTENSION_GPIO_PORT             2 // port B
 
 #define FUNCTION_MOTOR_GEAR_RATIO       (pros::E_MOTOR_GEARSET_18)
 #define FUCTION_MOTOR_ENCODER_UNIT      (pros::E_MOTOR_ENCODER_DEGREES)
@@ -85,6 +86,9 @@ typedef struct {
     functional_motor_t motor_intake;   // motor data.电机数据
     functional_motor_t motor_roller;   // motor data.电机数据
     pros::ADIPort *gas_gpio;           // control gas
+    pros::ADIPort *extension_gpio;           // control extension
+    std::uint32_t start_time;
+    std::uint32_t now_time;// used for calc extension time
 }functional_behaviour_t;
 
 static int flywheel_status = E_FLYWHEEL_STATUS_SPEED_HIGH;

@@ -248,8 +248,8 @@ void auto_task_fn(void* param)
     // while (true) {
     //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
     // }
-    move_time(FORWARD, 80, &auto_control);
-    move_time(BACKWARD, 80, &auto_control);
+    move_time(FORWARD, 500, &auto_control);
+    move_time(BACKWARD, 500, &auto_control);
 }
 /**
  * @brief           kick out 3 plates

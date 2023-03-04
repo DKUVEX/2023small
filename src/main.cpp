@@ -68,7 +68,11 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+    pros::Task auto_task (auto_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
+            TASK_STACK_DEPTH_DEFAULT, "auto_task");
+
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task

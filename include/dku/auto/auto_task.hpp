@@ -29,6 +29,8 @@
 //自动任务控制间隔 2ms
 #define AUTO_TASK_TIME_MS          2
 #define PI (3.1415926535)
+#define FORWARD 1
+#define BACKWARD 1
 typedef struct {
     double current_x;
     double current_y;
@@ -53,4 +55,12 @@ typedef struct {
   * @retval         none
   */
 void auto_task_fn(void* param);
+
+/**
+ * @brief           get the current status struck(x,y,direction)
+ * @param[out]       null
+ * @return          current_status_t*
+ * @retval         
+ */
+current_status_t* get_current_status_pointer(void);
 #endif

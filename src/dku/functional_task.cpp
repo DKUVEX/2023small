@@ -195,6 +195,9 @@ void functional_task_fn(void* param)
         if (functional_devices.index_motor == E_FUNCTIONAL_MOTOR_STATUS_FORWARD) {
             functional_behaviour.motor_index.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED*0.5);
         }
+        else if (functional_devices.index_motor == E_FUNCTIONAL_MOTOR_STATUS_OFF) {
+            functional_behaviour.motor_index.motor_status->move_velocity(FUNCTIONAL_MOTOR_ZERO_SPEED);
+        }
         flywheel_move(&functional_behaviour.motor_flywheel, &functional_behaviour.motor_flywheel_2,functional_devices.flywheel);
         // TODO need to be changed as enum
         if ( functional_devices.gas_gpio == FUNCTIONAL_LIFT_HIGH_STATE ) {

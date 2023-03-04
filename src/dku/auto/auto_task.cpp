@@ -41,6 +41,23 @@ void auto_init(auto_control_t* init);
 void turn_to(double target_x, double target_y, auto_control_t* turn);
 
 /**
+ * @brief           let robot turn to specific point
+ * @param[in]       target_angle: aimed position x
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval          null
+ */
+void turn_relative(double target_angle, auto_control_t* turn);
+
+/**
+ * @brief           let robot turn to specific point
+ * @param[in]       direction: direction, -1 or +1
+ * @param[in]       time: a period of time
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval          null
+ */
+void turn_time(double direction, double time, auto_control_t* turn);
+
+/**
  * @brief           let robot move to specific point
  * @param[in]       target_x: aimed position x
  * @param[in]       target_y: aimed position y
@@ -48,6 +65,15 @@ void turn_to(double target_x, double target_y, auto_control_t* turn);
  * @retval          null
  */
 void move_to(double target_x, double target_y, auto_control_t* move);
+
+/**
+ * @brief           let robot turn to specific point
+ * @param[in]       direction: direction, -1 or +1
+ * @param[in]       time: a period of time
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval          null
+ */
+void move_time(double direction, double time, auto_control_t* move);
 
 /**
  * @brief           kick out 3 plates
@@ -71,8 +97,12 @@ void auto_init(auto_control_t* init)
     {
         init->functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
         init->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+        init->functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
     }
     init_mutex.give();
+    // init->current_pos.current_x = 
+    // init->current_pos.current_y = 
+    // init->current_pos.current_dir = 
 }
 
 /**
@@ -102,6 +132,47 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
 }
 
 /**
+ * @brief           let robot turn to specific point
+ * @param[in]       target_angle: aimed position x
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval          null
+ */
+void turn_relative(double target_angle, auto_control_t* turn)
+{
+
+}
+
+/**
+ * @brief           let robot turn to specific point
+ * @param[in]       direction: direction, -1 or +1
+ * @param[in]       time: a period of time, unit:ms
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval          null
+ */
+void turn_time(double direction, double time, auto_control_t* turn)
+{
+    std::int32_t analog_right_x = 127;
+    pros::Mutex turn_mutex;
+    turn_mutex.take();
+    {
+        turn->chassis_voltage[0] = analog_right_x*direction;
+        turn->chassis_voltage[1] = analog_right_x*direction;
+        turn->chassis_voltage[2] = -analog_right_x*direction;
+        turn->chassis_voltage[3] = -analog_right_x*direction;
+    }
+    turn_mutex.give();
+    pros::delay(time);
+    analog_right_x = 0;
+    turn_mutex.take();
+    {
+        turn->chassis_voltage[0] = analog_right_x*direction;
+        turn->chassis_voltage[1] = analog_right_x*direction;
+        turn->chassis_voltage[2] = -analog_right_x*direction;
+        turn->chassis_voltage[3] = -analog_right_x*direction;
+    }
+    turn_mutex.give();
+}
+/**
  * @brief           let robot move to specific point
  * @param[in]       target_x: aimed position x
  * @param[in]       target_y: aimed position y
@@ -127,27 +198,58 @@ void move_to(double target_x, double target_y, auto_control_t* move)
     }
 }
 
+/**
+ * @brief           let robot turn to specific point
+ * @param[in]       direction: direction, -1 or +1
+ * @param[in]       time: a period of time
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval          null
+ */
+void move_time(double direction, double time, auto_control_t* move)
+{
+    std::int32_t analog_left_y = 127;
+    pros::Mutex turn_mutex;
+    turn_mutex.take();
+    {
+        move->chassis_voltage[0] = analog_left_y*direction;
+        move->chassis_voltage[1] = analog_left_y*direction;
+        move->chassis_voltage[2] = analog_left_y*direction;
+        move->chassis_voltage[3] = analog_left_y*direction;
+    }
+    turn_mutex.give();
+    pros::delay(time);
+    analog_left_y = 0;
+    turn_mutex.take();
+    {
+        move->chassis_voltage[0] = analog_left_y*direction;
+        move->chassis_voltage[1] = analog_left_y*direction;
+        move->chassis_voltage[2] = analog_left_y*direction;
+        move->chassis_voltage[3] = analog_left_y*direction;
+    }
+    turn_mutex.give();
+}
 
 /**
-  * @brief          auto task, osDelay AUTO_TASK_TIME_MS (2ms) 
+  * @brief          auto task. auto task is not a while true loop
   * @param[in]      param: null
   * @retval         none
   */
 /**
-  * @brief          自动任务，间隔 AUTO_TASK_TIME_MS 2ms
+  * @brief          自动任务
   * @param[in]      param: 空
   * @retval         none
   */
 void auto_task_fn(void* param)
 {
     std::cout << "auto task runs" << std::endl;
-    pros::Task::delay(AUTO_TASK_INIT_TIME);
+    // pros::Task::delay(AUTO_TASK_INIT_TIME);
     auto_init(&auto_control);
-    std::uint32_t now = pros::millis();
-    while (true) {
-        
-        pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
-    }
+    // std::uint32_t now = pros::millis();
+    // while (true) {
+    //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
+    // }
+    move_time(FORWARD, 80, &auto_control);
+    move_time(BACKWARD, 80, &auto_control);
 }
 /**
  * @brief           kick out 3 plates
@@ -168,4 +270,15 @@ void kick_out(auto_control_t* kick)
         kick->functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
     }
     kick_mutex.give();
+}
+
+/**
+ * @brief            get the current status struck(x,y,direction)
+ * @param[out]       null
+ * @return           current_status_t*
+ * @retval           
+ */
+current_status_t* get_current_status_pointer(void)
+{
+    return &auto_control.current_pos;
 }

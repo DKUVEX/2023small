@@ -97,6 +97,9 @@ void rc_update_task_fn(void* param)
             if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
                 controller_update.functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
             }
+            else if (!controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+                controller_update.functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+            }
             if(controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_B)) 
             {
                 controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_OFF;

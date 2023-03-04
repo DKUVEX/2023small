@@ -122,7 +122,7 @@ void rc_update_task_fn(void* param)
             }
             if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) ) {
                 controller_update.now_time = pros::millis();
-                if ((controller_update.now_time - controller_update.op_start_time)>60*1000) {
+                if ((controller_update.now_time - controller_update.op_start_time)>50*1000) {
                     controller_update.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
                 }
             }
@@ -132,6 +132,7 @@ void rc_update_task_fn(void* param)
             controller_update.op_start_time = pros::millis();
             controller_update.functional_status->gas_gpio = FUNCTIONAL_LIFT_LOW_STATE;
             controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
+            printf("here");
             controller_update.op_start_flag = true;
         }
         // printf("%d\n", chassis_motor_voltage[0] );

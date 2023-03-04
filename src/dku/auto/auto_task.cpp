@@ -92,17 +92,16 @@ void auto_init(auto_control_t* init)
 {
     init->chassis_voltage = get_chassis_voltage_point();
     init->functional_status = get_functional_device_status();
-    printf("here");
     pros::Mutex init_mutex;
     init_mutex.take();
     {
-        printf("here2");
-        init->functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
-        init->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+        // printf("here2");
+        init->functional_status->flywheel = E_FLYWHEEL_STATUS_OFF;
+        // init->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
         // init->functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
     }
     init_mutex.give();
-    printf("here3");
+    // printf("here3");
     // init->current_pos.current_x = 
     // init->current_pos.current_y = 
     // init->current_pos.current_dir = 
@@ -210,7 +209,7 @@ void move_to(double target_x, double target_y, auto_control_t* move)
  */
 void move_time(double direction, double time, auto_control_t* move)
 {
-    std::int32_t analog_left_y = 127;
+    std::int32_t analog_left_y = 70;
     pros::Mutex turn_mutex;
     turn_mutex.take();
     {
@@ -251,13 +250,37 @@ void auto_task_fn(void* param)
     // while (true) {
     //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
     // }
-    move_time(FORWARD, 300, &auto_control);
-    pros::delay(500);
-    move_time(STOP, 300, &auto_control);
+    move_time(FORWARD, 350, &auto_control);
+    pros::delay(1000);
+    pros::Mutex auto_mutes;
+    auto_mutes.take();
     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-    pros::delay(500);
+    auto_mutes.give();
+    pros::delay(220);
+    auto_mutes.take();
     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    auto_mutes.give();
+    pros::delay(1000);
     move_time(BACKWARD, 200, &auto_control);
+    pros::delay(500);
+    turn_time(FORWARD, 340, &auto_control);
+    pros::delay(500);
+    move_time(FORWARD, 900, &auto_control);
+    pros::delay(1000);
+    auto_mutes.take();
+    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    auto_mutes.give();
+    pros::delay(200);
+    auto_mutes.take();
+    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    auto_mutes.give();
+
+    move_time(BACKWARD, 600, &auto_control);
+    turn_time(BACKWARD, 290, &auto_control);
+
+    auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+
+    
 }
 /**
  * @brief           kick out 3 plates

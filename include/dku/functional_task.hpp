@@ -84,7 +84,7 @@ typedef enum functional_adi_status_e
 } functional_adi_status_e_t;
 
 typedef struct {
-    std::int32_t flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
+    std::int32_t flywheel;
     std::int32_t index_motor;
     std::int32_t intake_motor;
     std::int32_t roller_motor;

@@ -34,8 +34,7 @@ void initialize() {
                 TASK_STACK_DEPTH_DEFAULT, "chassis_task");
     pros::Task functional_task (functional_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
                 TASK_STACK_DEPTH_DEFAULT, "functional_task");
-    pros::Task rc_update_task (rc_update_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
-                TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
+
 
 }
 
@@ -71,7 +70,6 @@ void competition_initialize() {}
 void autonomous() {
     pros::Task auto_task (auto_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
             TASK_STACK_DEPTH_DEFAULT, "auto_task");
-
 }
 
 /**
@@ -91,7 +89,8 @@ void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	pros::Motor left_mtr(1);
 	pros::Motor right_mtr(2);
-
+    pros::Task rc_update_task (rc_update_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
+                TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,

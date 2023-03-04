@@ -261,24 +261,24 @@ void auto_task_fn(void* param)
     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
     auto_mutes.give();
     pros::delay(1000);
-    move_time(BACKWARD, 200, &auto_control);
-    pros::delay(500);
-    turn_time(FORWARD, 340, &auto_control);
-    pros::delay(500);
-    move_time(FORWARD, 900, &auto_control);
-    pros::delay(1000);
-    auto_mutes.take();
-    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-    auto_mutes.give();
-    pros::delay(200);
-    auto_mutes.take();
-    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-    auto_mutes.give();
+    // move_time(BACKWARD, 200, &auto_control);
+    // pros::delay(500);
+    // turn_time(FORWARD, 340, &auto_control);
+    // pros::delay(500);
+    // move_time(FORWARD, 900, &auto_control);
+    // pros::delay(1000);
+    // auto_mutes.take();
+    // auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    // auto_mutes.give();
+    // pros::delay(200);
+    // auto_mutes.take();
+    // auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    // auto_mutes.give();
 
-    move_time(BACKWARD, 600, &auto_control);
-    turn_time(BACKWARD, 290, &auto_control);
+    // move_time(BACKWARD, 600, &auto_control);
+    // turn_time(BACKWARD, 290, &auto_control);
 
-    auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+    // auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
 
     
 }

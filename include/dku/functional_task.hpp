@@ -35,6 +35,7 @@
 #define FLYWHEEL_MOTOR_2_PORT           21
 #define INDEX_MOTOR_PORT                1
 #define ROLLER_MOTOR_PORT               3
+#define EXTENSION_MOTOR_PORT            4
 
 #define GAS_GPIO_PORT                   1 // port A
 #define EXTENSION_GPIO_PORT             2 // port B
@@ -90,6 +91,7 @@ typedef struct {
     std::int32_t roller_motor;
     std::int32_t gas_gpio;
     std::int32_t extension_gpio;
+    std::int32_t extension_motor;
 }functional_device_status_t;
 
 typedef struct {
@@ -109,6 +111,7 @@ typedef struct {
     functional_motor_t motor_index;   // motor data.电机数据
     functional_motor_t motor_intake;   // motor data.电机数据
     functional_motor_t motor_roller;   // motor data.电机数据
+    functional_motor_t motor_extension;   // motor data.电机数据
     pros::ADIPort *gas_gpio;           // control gas
     pros::ADIPort *extension_gpio;           // control extension
 }functional_behaviour_t;

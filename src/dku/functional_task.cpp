@@ -29,6 +29,7 @@ functional_device_status_t functional_devices;
 pros::Motor intake_motor(INTAKE_MOTOR_PORT, FUNCTION_MOTOR_GEAR_RATIO, false, FUCTION_MOTOR_ENCODER_UNIT);
 pros::Motor index_motor(INDEX_MOTOR_PORT, FUNCTION_MOTOR_GEAR_RATIO, true, FUCTION_MOTOR_ENCODER_UNIT);
 pros::Motor roller_motor(ROLLER_MOTOR_PORT, FUNCTION_MOTOR_GEAR_RATIO, false, FUCTION_MOTOR_ENCODER_UNIT);
+pros::Motor extension_motor(EXTENSION_MOTOR_PORT, FUNCTION_MOTOR_GEAR_RATIO, false, FUCTION_MOTOR_ENCODER_UNIT);
 
 pros::Motor flywheel_motor(FLYWHEEL_MOTOR_PORT,FLYWHEEL_MOTOR_GEAR_RATIO, true, FLYWHEEL_MOTOR_ENCODER_UNIT); //fly wheel do not have gear
 pros::Motor flywheel_motor_2(FLYWHEEL_MOTOR_2_PORT,FLYWHEEL_MOTOR_GEAR_RATIO, true, FLYWHEEL_MOTOR_ENCODER_UNIT); //fly wheel do not have gear
@@ -141,6 +142,7 @@ static void functional_init(functional_behaviour_t *functional_behaviour_init)
     functional_behaviour_init->motor_index.motor_status = &index_motor;
     functional_behaviour_init->motor_intake.motor_status = &intake_motor;
     functional_behaviour_init->motor_roller.motor_status = &roller_motor;
+    functional_behaviour_init->motor_extension.motor_status = &extension_motor;
     functional_behaviour_init->motor_flywheel.motor_status = &flywheel_motor;
     functional_behaviour_init->motor_flywheel_2.motor_status = &flywheel_motor_2;
     functional_behaviour_init->gas_gpio = &gas_GPIO;
@@ -195,6 +197,9 @@ void functional_task_fn(void* param)
         if (functional_devices.index_motor == E_FUNCTIONAL_MOTOR_STATUS_FORWARD) {
             functional_behaviour.motor_index.motor_status->move_velocity(FUNCTIONAL_MOTOR_MAX_SPEED*0.5);
         }
+        else if (functional_devices.index_motor == E_FUNCTIONAL_MOTOR_STATUS_BACKWARD) {
+            functional_behaviour.motor_index.motor_status->move_velocity(-FUNCTIONAL_MOTOR_MAX_SPEED*0.5);
+        }
         else if (functional_devices.index_motor == E_FUNCTIONAL_MOTOR_STATUS_OFF) {
             functional_behaviour.motor_index.motor_status->move_velocity(FUNCTIONAL_MOTOR_ZERO_SPEED);
         }
@@ -208,6 +213,12 @@ void functional_task_fn(void* param)
         }
         if (functional_devices.extension_gpio == FUNCTIONAL_LIFT_LOW_STATE ) {
             functional_behaviour.extension_gpio->set_value(FUNCTIONAL_LIFT_LOW_STATE);
+        }
+        if (functional_devices.extension_motor == E_FUNCTIONAL_MOTOR_STATUS_BACKWARD ) {
+            functional_behaviour.motor_extension.motor_status->move_velocity(-FUNCTIONAL_MOTOR_MAX_SPEED);
+        }
+        else if (functional_devices.extension_motor == E_FUNCTIONAL_MOTOR_STATUS_OFF ) {
+            functional_behaviour.motor_extension.motor_status->move_velocity(FUNCTIONAL_MOTOR_ZERO_SPEED);
         }
         pros::Task::delay_until(&now, FUNCTIONAL_CONTROL_TIME_MS);
     }

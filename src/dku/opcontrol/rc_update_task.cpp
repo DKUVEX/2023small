@@ -1,6 +1,7 @@
 #include "dku/opcontrol/rc_update_task.hpp"
 #include "dku/chassis_task.hpp"
 #include "dku/functional_task.hpp"
+#include "pros/misc.h"
 #include "pros/rtos.hpp"
 
 rc_update_t controller_update;
@@ -80,7 +81,6 @@ void rc_update_task_fn(void* param)
             if ((controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R1))
                 && !controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L2))
             {
-                controller_update.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
                 controller_update.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
             }
             else if ((controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R2))
@@ -94,10 +94,18 @@ void rc_update_task_fn(void* param)
                 controller_update.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
                 controller_update.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
             }
-            if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-                controller_update.functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+            if ((controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_Y))) {
+                controller_update.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+            }
+            else if ((controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))) {
+                controller_update.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+            }
+            if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+                controller_update.functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
             }
             else if (!controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+                controller_update.functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;                
+            }{
                 controller_update.functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
             }
             if(controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_B)) 
@@ -119,6 +127,17 @@ void rc_update_task_fn(void* param)
             }
             if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) ) {
                 controller_update.functional_status->gas_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+            }
+            if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L1) ) {
+                controller_update.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+                controller_update.functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+            }
+
+            if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_UP) ) {
+                controller_update.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+            }
+            else {
+                controller_update.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
             }
             if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) ) {
                 controller_update.now_time = pros::millis();

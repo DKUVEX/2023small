@@ -130,6 +130,8 @@ void rc_update_task_fn(void* param)
         fucntional_mutex.give();
         if (pros::competition::is_connected() && controller_update.op_start_flag == false) {
             controller_update.op_start_time = pros::millis();
+            controller_update.functional_status->gas_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+            controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
             controller_update.op_start_flag = true;
         }
         // printf("%d\n", chassis_motor_voltage[0] );

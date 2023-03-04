@@ -30,7 +30,8 @@
 #define AUTO_TASK_TIME_MS          2
 #define PI (3.1415926535)
 #define FORWARD 1
-#define BACKWARD 1
+#define BACKWARD -1
+#define STOP 0
 typedef struct {
     double current_x;
     double current_y;

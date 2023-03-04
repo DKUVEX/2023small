@@ -92,14 +92,17 @@ void auto_init(auto_control_t* init)
 {
     init->chassis_voltage = get_chassis_voltage_point();
     init->functional_status = get_functional_device_status();
+    printf("here");
     pros::Mutex init_mutex;
     init_mutex.take();
     {
+        printf("here2");
         init->functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
         init->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
-        init->functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+        // init->functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
     }
     init_mutex.give();
+    printf("here3");
     // init->current_pos.current_x = 
     // init->current_pos.current_y = 
     // init->current_pos.current_dir = 
@@ -248,8 +251,13 @@ void auto_task_fn(void* param)
     // while (true) {
     //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
     // }
-    move_time(FORWARD, 80, &auto_control);
-    move_time(BACKWARD, 80, &auto_control);
+    move_time(FORWARD, 300, &auto_control);
+    pros::delay(500);
+    move_time(STOP, 300, &auto_control);
+    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    pros::delay(500);
+    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    move_time(BACKWARD, 200, &auto_control);
 }
 /**
  * @brief           kick out 3 plates

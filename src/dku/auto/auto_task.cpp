@@ -271,26 +271,29 @@ void auto_task_fn(void* param)
     auto_mutex.give();
     pros::delay(320);
     
-    // move_time(FORWARD, 300, &auto_control);
-    // turn_time(BACKWARD, 380, &auto_control);
-    // pros::delay(1000);
-    // move_time(BACKWARD, 500, &auto_control);
+    move_time(FORWARD, 300, &auto_control);
+    turn_time(BACKWARD, 380, &auto_control);
+    pros::delay(1000);
+    move_time(BACKWARD, 500, &auto_control);
     
-    // auto_mutex.take();
-    // auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-    // auto_mutex.give();
+    auto_mutex.take();
+    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    auto_mutex.give();
     
-    // pros::delay(500);
+    pros::delay(500);
 
-    // auto_mutex.take();
-    // auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-    // auto_mutex.give();
-    // pros::delay(300);
-    // move_time(FORWARD, 300, &auto_control);
-    // turn_time(FORWARD, 200, &auto_control);
-    // pros::delay(1000);
-    // move_time(BACKWARD, 100, &auto_control);
-    
+    auto_mutex.take();
+    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    auto_mutex.give();
+    pros::delay(300);
+    move_time(FORWARD, 300, &auto_control);
+    turn_time(FORWARD, 200, &auto_control);
+    pros::delay(1000);
+    move_time(BACKWARD, 100, &auto_control);
+    auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    pros::delay(1500);
+    auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+
     
 }
 /**

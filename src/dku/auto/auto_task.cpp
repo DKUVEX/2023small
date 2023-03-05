@@ -244,8 +244,10 @@ void move_time(double direction, double time, auto_control_t* move)
 void auto_task_fn(void* param)
 {
     std::cout << "auto task runs" << std::endl;
+
     // pros::Task::delay(AUTO_TASK_INIT_TIME);
     auto_init(&auto_control);
+    std::uint32_t now_a = pros::millis();
     // std::uint32_t now = pros::millis();
     // while (true) {
     //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
@@ -261,26 +263,29 @@ void auto_task_fn(void* param)
     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
     auto_mutes.give();
     pros::delay(1000);
-    // move_time(BACKWARD, 200, &auto_control);
-    // pros::delay(500);
-    // turn_time(FORWARD, 340, &auto_control);
-    // pros::delay(500);
-    // move_time(FORWARD, 900, &auto_control);
-    // pros::delay(1000);
-    // auto_mutes.take();
-    // auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-    // auto_mutes.give();
-    // pros::delay(200);
-    // auto_mutes.take();
-    // auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-    // auto_mutes.give();
+    move_time(BACKWARD, 200, &auto_control);
+    pros::delay(500);
+    turn_time(FORWARD, 340, &auto_control);
+    pros::delay(500);
+    move_time(FORWARD, 900, &auto_control);
+    pros::delay(1000);
+    auto_mutes.take();
+    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    auto_mutes.give();
+    pros::delay(200);
+    auto_mutes.take();
+    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    auto_mutes.give();
 
-    // move_time(BACKWARD, 600, &auto_control);
-    // turn_time(BACKWARD, 290, &auto_control);
+    move_time(BACKWARD, 600, &auto_control);
+    turn_time(BACKWARD, 290, &auto_control);
 
     // auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
 
-    
+    std::uint32_t now_time_b = pros::millis();
+    if ((now_time_b - now_a)>50*1000) {
+        auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+    }
 }
 /**
  * @brief           kick out 3 plates

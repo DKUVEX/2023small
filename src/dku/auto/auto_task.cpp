@@ -281,12 +281,13 @@ void auto_task_fn(void* param)
     turn_time(BACKWARD, 290, &auto_control);
 
     // auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
-
-    std::uint32_t now_time_b = pros::millis();
-    if ((now_time_b - now_a)>50*1000) {
-        auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+    while (true) {
+        std::uint32_t now_time_b = pros::millis();
+        if ((now_time_b - now_a)>50*1000) {
+            auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+        }
     }
-}
+    }
 /**
  * @brief           kick out 3 plates
  * @param[in,out]   kick: change the voltage of index

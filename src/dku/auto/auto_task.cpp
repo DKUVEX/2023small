@@ -267,8 +267,9 @@ void auto_task_fn(void* param)
     pros::delay(500);
     turn_time(FORWARD, 340, &auto_control);
     pros::delay(500);
-    move_time(FORWARD, 900, &auto_control);
+    move_time(FORWARD, 1100, &auto_control);
     pros::delay(1000);
+
     auto_mutes.take();
     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
     auto_mutes.give();

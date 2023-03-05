@@ -257,6 +257,7 @@ void auto_task_fn(void* param)
     // while (true) {
     //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
     // }
+    std::int32_t now_1 = pros::millis();
     horizontal_time(FORWARD, 1310, &auto_control);
     move_time(BACKWARD, 105, &auto_control);
     pros::Mutex auto_mutex;
@@ -290,10 +291,17 @@ void auto_task_fn(void* param)
     turn_time(FORWARD, 200, &auto_control);
     pros::delay(1000);
     move_time(BACKWARD, 100, &auto_control);
-    auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-    pros::delay(1500);
-    auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
 
+    while (true) {
+        std::int32_t now_2 = pros::millis();
+        if (now_2 - now_1 >= 50*1000) {
+            auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+            pros::delay(1500);
+            auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+        }
+        
+    }
+    
     
 }
 /**

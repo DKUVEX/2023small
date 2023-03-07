@@ -263,7 +263,7 @@ void auto_task_fn(void* param)
     pros::Mutex auto_mutex;
     auto_mutex.take();
     {
-        auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+        auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
     }
     auto_mutex.give();
     pros::delay(200);
@@ -275,7 +275,7 @@ void auto_task_fn(void* param)
     move_time(FORWARD, 300, &auto_control);
     turn_time(BACKWARD, 380, &auto_control);
     pros::delay(1000);
-    move_time(BACKWARD, 500, &auto_control);
+    move_time(BACKWARD, 560, &auto_control);
     
     auto_mutex.take();
     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
@@ -288,7 +288,7 @@ void auto_task_fn(void* param)
     auto_mutex.give();
     pros::delay(300);
     move_time(FORWARD, 300, &auto_control);
-    turn_time(FORWARD, 200, &auto_control);
+    turn_time(FORWARD, 180, &auto_control);
     pros::delay(1000);
     move_time(BACKWARD, 100, &auto_control);
 

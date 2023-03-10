@@ -256,11 +256,11 @@ void auto_task_fn(void* param)
     pros::delay(1000);
     pros::Mutex auto_mutes;
     auto_mutes.take();
-    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+        auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
     auto_mutes.give();
     pros::delay(220);
     auto_mutes.take();
-    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+        auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
     auto_mutes.give();
     pros::delay(1000);
     move_time(BACKWARD, 200, &auto_control);
@@ -271,11 +271,11 @@ void auto_task_fn(void* param)
     pros::delay(1000);
 
     auto_mutes.take();
-    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+        auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
     auto_mutes.give();
     pros::delay(200);
     auto_mutes.take();
-    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+        auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
     auto_mutes.give();
 
     move_time(BACKWARD, 600, &auto_control);
@@ -285,7 +285,9 @@ void auto_task_fn(void* param)
     while (true) {
         std::uint32_t now_time_b = pros::millis();
         if ((now_time_b - now_a)>50*1000) {
-            auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+            auto_mutes.take();
+                auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+            auto_mutes.give();
         }
     }
     }

@@ -56,8 +56,8 @@ void rc_update_task_fn(void* param)
     std::uint32_t now = pros::millis();
     while (true) {
         // Do opcontrol things
-        pros::Mutex chassis_mutex;
-        chassis_mutex.take();
+        pros::Mutex rc_update_mutex;
+        rc_update_mutex.take();
         {
             controller_update.chassis_voltage[0] = controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
                                         +controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
@@ -72,66 +72,113 @@ void rc_update_task_fn(void* param)
                                         +controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
                                         -controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);        
         }
-        chassis_mutex.give();
-        pros::Mutex fucntional_mutex;
-        fucntional_mutex.take();
+        rc_update_mutex.give();
+        
         {
             //TODO:can be improved
             if ((controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R1))
                 && !controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L2))
             {
-                controller_update.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-                controller_update.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+                rc_update_mutex.take();
+                {                   
+                    controller_update.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+                    controller_update.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+                }
+                rc_update_mutex.give();
             }
             else if ((controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R2))
                     && !controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L2))
             {
-                controller_update.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+                rc_update_mutex.take();
+                {
+                    controller_update.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+                }
+                rc_update_mutex.give();
             }
             else if (!(controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R2))
                     && !(controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R1)))
             {
-                controller_update.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-                controller_update.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+                rc_update_mutex.take();
+                {
+                    controller_update.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+                    controller_update.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+                }
+                rc_update_mutex.give();
             }
             if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-                controller_update.functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+                rc_update_mutex.take();
+                {
+                    controller_update.functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+                }
+                rc_update_mutex.give();
             }
             else if (!controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-                controller_update.functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+                rc_update_mutex.take();
+                {
+                    controller_update.functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+                }
+                rc_update_mutex.give();
             }
             if(controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_B)) 
             {
-                controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_OFF;
+                rc_update_mutex.take();
+                {
+                    controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_OFF;
+                }
+                rc_update_mutex.give();
             }
             else if(controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L2) 
                     && controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R1)) 
             {
-                controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
+                rc_update_mutex.take();
+                {
+                    controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
+                }
+                rc_update_mutex.give();
             }
             else if(controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_L2) 
                     && controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_R2)) 
             {
-                controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_LOW;
+                rc_update_mutex.take();
+                {
+                    controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_LOW;
+                }
+                rc_update_mutex.give();
             }
             if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_UP) ) {
-                controller_update.functional_status->gas_gpio = FUNCTIONAL_LIFT_HIGH_STATE;
+                rc_update_mutex.take();
+                {
+                    controller_update.functional_status->gas_gpio = FUNCTIONAL_LIFT_HIGH_STATE;
+                }
+                rc_update_mutex.give();
             }
             if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) ) {
-                controller_update.functional_status->gas_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+                rc_update_mutex.take();
+                {
+                    controller_update.functional_status->gas_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+                }
+                rc_update_mutex.give();
             }
             if (controller_update.update_RC->get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) ) {
                 controller_update.now_time = pros::millis();
                 if ((controller_update.now_time - controller_update.op_start_time)>50*1000) {
-                    controller_update.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+                    rc_update_mutex.take();
+                    {
+                        controller_update.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+                    }
+                    rc_update_mutex.give();
                 }
             }
         }
-        fucntional_mutex.give();
+        
         if (pros::competition::is_connected() && controller_update.op_start_flag == false) {
             controller_update.op_start_time = pros::millis();
-            controller_update.functional_status->gas_gpio = FUNCTIONAL_LIFT_LOW_STATE;
-            controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
+            rc_update_mutex.take();
+            {
+                controller_update.functional_status->gas_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+                controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
+            }
+            rc_update_mutex.give();
             printf("here");
             controller_update.op_start_flag = true;
         }

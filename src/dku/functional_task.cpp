@@ -199,6 +199,10 @@ void functional_task_fn(void* param)
             functional_behaviour.motor_index.motor_status->move_velocity(FUNCTIONAL_MOTOR_ZERO_SPEED);
         }
         flywheel_move(&functional_behaviour.motor_flywheel, &functional_behaviour.motor_flywheel_2,functional_devices.flywheel);
+        pros::motor_pid_full_s_t testpid;
+        testpid = functional_behaviour.motor_flywheel.motor_status->get_pos_pid();
+        printf("kf is %d, kp is %d, ki is %d, kd is %d, filter is %d, limit is %d, threshod is %d, loopspeed is %d\n", &testpid.kf, &testpid.kp, &testpid.ki, &testpid.kd, &testpid.filter, &testpid.limit, &testpid.threshold, &testpid.loopspeed);
+        
         // TODO need to be changed as enum
         if ( functional_devices.gas_gpio == FUNCTIONAL_LIFT_HIGH_STATE ) {
             functional_behaviour.gas_gpio->set_value(FUNCTIONAL_LIFT_HIGH_STATE);

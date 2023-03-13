@@ -17,6 +17,7 @@
   */
 #include "dku/chassis_task.hpp"
 #include "dku/remote_control.hpp"
+#include "pros/motors.h"
 
 
 //底盘运动数据 chassis movement data
@@ -61,7 +62,6 @@ static void chassis_init(chassis_move_t *chassis_move_init)
     chassis_move_init->motor_chassis[1].motor_status = &chassis_motor_lb;
     chassis_move_init->motor_chassis[2].motor_status = &chassis_motor_ra;
     chassis_move_init->motor_chassis[3].motor_status = &chassis_motor_rb;
-
 }
 /**
   * @brief          chassis task, osDelay CHASSIS_CONTROL_TIME_MS (2ms) 

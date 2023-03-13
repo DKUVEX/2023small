@@ -126,20 +126,30 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
     pros::lcd::print(0, "heading: ", turn->sensor_data->gps_front_data.gps_pos.yaw); 
     printf("heading: %lf\n", turn->sensor_data->gps_front_data.gps_pos.yaw);
     // while (abs((int)(turn->current_pos.current_dir - angle))>=1) {
-    while (abs((int)(turn->sensor_data->gps_front_data.gps_pos.yaw - angle))>=10) {
+    pros::Mutex turn_mutex;
+    while (abs((int)(turn->sensor_data->gps_front_data.gps_pos.yaw - angle))>=20) {
 
-        analog_right_x = 60;
-        pros::Mutex turn_mutex;
+        analog_right_x = 50;
         turn_mutex.take();
         {
-            // turn->chassis_voltage[0] = analog_right_x;
-            // turn->chassis_voltage[1] = analog_right_x;
-            // turn->chassis_voltage[2] = -analog_right_x;
-            // turn->chassis_voltage[3] = -analog_right_x;
+            turn->chassis_voltage[0] = analog_right_x;
+            turn->chassis_voltage[1] = analog_right_x;
+            turn->chassis_voltage[2] = -analog_right_x;
+            turn->chassis_voltage[3] = -analog_right_x;
         }
         turn_mutex.give();
         pros::lcd::print(2, "heading: %lf", turn->sensor_data->gps_front_data.gps_pos.yaw); 
+        rad = atan2f((target_x - turn->sensor_data->gps_front_data.gps_pos.x), (target_y - turn->sensor_data->gps_front_data.gps_pos.x));
+        angle = rad*(180/PI);
     }
+    turn_mutex.take();
+    {
+        turn->chassis_voltage[0] = 0;
+        turn->chassis_voltage[1] = 0;
+        turn->chassis_voltage[2] = 0;
+        turn->chassis_voltage[3] = 0;
+    }
+    turn_mutex.give();
 }
 
 /**
@@ -254,10 +264,12 @@ void auto_task_fn(void* param)
 {
     std::cout << "auto task runs" << std::endl;
 
-    // pros::Task::delay(AUTO_TASK_INIT_TIME);
+    pros::Task::delay(AUTO_TASK_INIT_TIME);
     auto_init(&auto_control);
+    std::uint32_t now = pros::millis();
     while (true) {
         turn_to(0,0,&auto_control);
+        pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
     }
     // turn_to(0,0,&auto_control);
     // std::uint32_t now_a = pros::millis();

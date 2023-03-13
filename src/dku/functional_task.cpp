@@ -109,8 +109,8 @@ static void flywheel_move(functional_motor_t *flywheel_motor, functional_motor_t
         flywheel_motor_2->motor_status->move_voltage(flywheel_motor_2->set_voltage);
     }
     else if (flywheel_status == E_FLYWHEEL_STATUS_SPEED_HIGH) {
-        flywheel_motor->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.8;
-        flywheel_motor_2->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.8;
+        flywheel_motor->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.75;
+        flywheel_motor_2->set_voltage = MAX_FLEWHEEL_MOTOR_VOLTAGE*0.75;
         flywheel_motor->motor_status->move_voltage(flywheel_motor->set_voltage);
         flywheel_motor_2->motor_status->move_voltage(flywheel_motor_2->set_voltage);
         // flywheel_speed_control_withoutpid(flywheel_motor, FLYWHEEL_CONTROL_ERROR);

@@ -15,7 +15,7 @@
   ****************************(C) COPYRIGHT 2019 DJI****************************
   */
 
-#include "dku/control/pid.hpp"
+#include "dku/algorithm/pid.hpp"
 
 #define LimitMax(input, max)   \
     {                          \

@@ -84,7 +84,7 @@ void chassis_task_fn(void* param)
         for (int i=0; i<=3; i++) {
             chassis_move.motor_chassis[i].motor_status->move(chassis_motor_voltage[i]);
         }
-        pros::motor_pid_full_s_t testpid;
+        // pros::motor_pid_full_s_t testpid;
         // testpid = chassis_move.motor_chassis[1].motor_status->get_pos_pid();
         // printf("kf is %d, kp is %d, ki is %d, kd is %d, filter is %d, limit is %d, threshod is %d, loopspeed is %d\n", &testpid.kf, &testpid.kp, &testpid.ki, &testpid.kd, &testpid.filter, &testpid.limit, &testpid.threshold, &testpid.loopspeed);
         pros::Task::delay_until(&now, CHASSIS_CONTROL_TIME_MS);

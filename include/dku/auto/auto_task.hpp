@@ -21,6 +21,7 @@
 #include "api.h"
 #include "dku/functional_task.hpp"
 #include "dku/chassis_task.hpp"
+#include "dku/sensor_task.hpp"
 #include <cmath>
 //in the beginning of task ,wait a time
 //任务开始空闲一段时间
@@ -42,6 +43,7 @@ typedef struct {
     std::int32_t *chassis_voltage;
     functional_device_status_t *functional_status;
     current_status_t current_pos;
+    sensor_data_t *sensor_data;
 }auto_control_t;
 
 

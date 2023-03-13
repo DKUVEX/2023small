@@ -17,6 +17,7 @@
  */
 #include "dku/auto/auto_task.hpp"
 #include "dku/functional_task.hpp"
+#include "dku/sensor_task.hpp"
 #include "pros/rtos.hpp"
 #include <cstdint>
 
@@ -90,8 +91,10 @@ void kick_out(auto_control_t* kick);
  */
 void auto_init(auto_control_t* init)
 {
+
     init->chassis_voltage = get_chassis_voltage_point();
     init->functional_status = get_functional_device_status();
+    init->sensor_data = get_sensor_data_point();
     pros::Mutex init_mutex;
     init_mutex.take();
     {
@@ -117,19 +120,25 @@ void auto_init(auto_control_t* init)
 void turn_to(double target_x, double target_y, auto_control_t* turn)
 {
     std::int32_t analog_right_x = 0; //simulate the joystick
-    double rad = atan2f((target_x - turn->current_pos.current_x), (target_y - turn->current_pos.current_y));
+    // double rad = atan2f((target_x - turn->current_pos.current_x), (target_y - turn->current_pos.current_y));
+    double rad = atan2f((target_x - turn->sensor_data->gps_front_data.gps_pos.x), (target_y - turn->sensor_data->gps_front_data.gps_pos.x));
     double angle = rad*(180/PI);
-    while (abs((int)(turn->current_pos.current_dir - angle))>=1) {
-        analog_right_x = 127;
+    pros::lcd::print(0, "heading: ", turn->sensor_data->gps_front_data.gps_pos.yaw); 
+    printf("heading: %lf\n", turn->sensor_data->gps_front_data.gps_pos.yaw);
+    // while (abs((int)(turn->current_pos.current_dir - angle))>=1) {
+    while (abs((int)(turn->sensor_data->gps_front_data.gps_pos.yaw - angle))>=10) {
+
+        analog_right_x = 60;
         pros::Mutex turn_mutex;
         turn_mutex.take();
         {
-            turn->chassis_voltage[0] = analog_right_x;
-            turn->chassis_voltage[1] = analog_right_x;
-            turn->chassis_voltage[2] = -analog_right_x;
-            turn->chassis_voltage[3] = -analog_right_x;
+            // turn->chassis_voltage[0] = analog_right_x;
+            // turn->chassis_voltage[1] = analog_right_x;
+            // turn->chassis_voltage[2] = -analog_right_x;
+            // turn->chassis_voltage[3] = -analog_right_x;
         }
         turn_mutex.give();
+        pros::lcd::print(2, "heading: %lf", turn->sensor_data->gps_front_data.gps_pos.yaw); 
     }
 }
 
@@ -247,50 +256,55 @@ void auto_task_fn(void* param)
 
     // pros::Task::delay(AUTO_TASK_INIT_TIME);
     auto_init(&auto_control);
-    std::uint32_t now_a = pros::millis();
-    // std::uint32_t now = pros::millis();
-    // while (true) {
-    //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
-    // }
-    move_time(FORWARD, 350, &auto_control);
-    pros::delay(1000);
-    pros::Mutex auto_mutes;
-    auto_mutes.take();
-        auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-    auto_mutes.give();
-    pros::delay(220);
-    auto_mutes.take();
-        auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-    auto_mutes.give();
-    pros::delay(1000);
-    move_time(BACKWARD, 200, &auto_control);
-    pros::delay(500);
-    turn_time(FORWARD, 340, &auto_control);
-    pros::delay(500);
-    move_time(FORWARD, 1100, &auto_control);
-    pros::delay(1000);
-
-    auto_mutes.take();
-        auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-    auto_mutes.give();
-    pros::delay(200);
-    auto_mutes.take();
-        auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-    auto_mutes.give();
-
-    move_time(BACKWARD, 600, &auto_control);
-    turn_time(BACKWARD, 290, &auto_control);
-
-    // auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
     while (true) {
-        std::uint32_t now_time_b = pros::millis();
-        if ((now_time_b - now_a)>50*1000) {
-            auto_mutes.take();
-                auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
-            auto_mutes.give();
-        }
+        turn_to(0,0,&auto_control);
     }
-    }
+    // turn_to(0,0,&auto_control);
+    // std::uint32_t now_a = pros::millis();
+    // // std::uint32_t now = pros::millis();
+    // // while (true) {
+    // //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
+    // // }
+    // move_time(FORWARD, 350, &auto_control);
+    // pros::delay(1000);
+    // pros::Mutex auto_mutes;
+    // auto_mutes.take();
+    //     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    // auto_mutes.give();
+    // pros::delay(220);
+    // auto_mutes.take();
+    //     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    // auto_mutes.give();
+    // pros::delay(1000);
+    // move_time(BACKWARD, 200, &auto_control);
+    // pros::delay(500);
+    // turn_time(FORWARD, 340, &auto_control);
+    // pros::delay(500);
+    // move_time(FORWARD, 1100, &auto_control);
+    // pros::delay(1000);
+
+    // auto_mutes.take();
+    //     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    // auto_mutes.give();
+    // pros::delay(200);
+    // auto_mutes.take();
+    //     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    // auto_mutes.give();
+
+    // move_time(BACKWARD, 600, &auto_control);
+    // turn_time(BACKWARD, 290, &auto_control);
+
+    // // auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+    // while (true) {
+    //     std::uint32_t now_time_b = pros::millis();
+    //     if ((now_time_b - now_a)>50*1000) {
+    //         auto_mutes.take();
+    //             auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+    //         auto_mutes.give();
+    //     }
+    // }
+
+}
 /**
  * @brief           kick out 3 plates
  * @param[in,out]   kick: change the voltage of index

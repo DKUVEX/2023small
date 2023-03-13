@@ -85,6 +85,8 @@ static void sensor_init(sensor_data_t *sensor_fetch_init)
 {
     sensor_fetch_init->gps_front_data.gps_pointer = &gps_front;
     sensor_fetch_init->gps_back_data.gps_pointer = &gps_back;
+    sensor_fetch_init->gps_front_data.gps_pointer->set_data_rate(SENSOR_GPS_DATA_RATE);
+    sensor_fetch_init->gps_back_data.gps_pointer->set_data_rate(SENSOR_GPS_DATA_RATE);
     gps_data_update(&sensor_fetch_init->gps_front_data);
     gps_data_update(&sensor_fetch_init->gps_back_data);
 }
@@ -103,12 +105,12 @@ sensor_data_t *get_sensor_data_point(void)
     return &sensor_fetch;
 }
 /**
-  * @brief          sensor task, osDelay SENSOR_CONTROL_TIME_MS (2ms) 
+  * @brief          sensor task, osDelay SENSOR_CONTROL_TIME_MS (5ms) 
   * @param[in]      param: null
   * @retval         none
   */
 /**
-  * @brief          传感器任务，间隔 SENSOR_CONTROL_TIME_MS 2ms
+  * @brief          传感器任务，间隔 SENSOR_CONTROL_TIME_MS 5ms
   * @param[in]      param: 空
   * @retval         none
   */

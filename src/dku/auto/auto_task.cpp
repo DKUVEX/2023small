@@ -115,7 +115,7 @@ void auto_init(auto_control_t* init)
     {
         // printf("here2");
         init->functional_status->flywheel = E_FLYWHEEL_STATUS_OFF;
-        // init->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+        init->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
         // init->functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
     }
     init_mutex.give();
@@ -384,16 +384,13 @@ void auto_task_fn(void* param)
 
     pros::Task::delay(AUTO_TASK_INIT_TIME);
     auto_init(&auto_control);
-    // std::uint32_t now = pros::millis();
-    // while (true) {
-    //     turn_to(1.8,1.8,&auto_control);
-    //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
-    // }
 
-    // turn_to(0,0,&auto_control);
     turn_relative(90, &auto_control);
     move_relative(0.5, &auto_control);
     turn_relative(90, &auto_control);
+
+    rotate_roller(3000, &auto_control);
+    kick_out(&auto_control);
 
     // turn_to(0,0,&auto_control);
     // std::uint32_t now_a = pros::millis();
@@ -451,8 +448,10 @@ void kick_out(auto_control_t* kick)
     pros::Mutex kick_mutex;
     kick_mutex.take();
     {
-        kick->functional_status->flywheel = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+        kick->functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
     }
+    kick_mutex.give();
+    pros::delay(2500);
     kick_mutex.take();
     {
         kick->functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
@@ -462,6 +461,11 @@ void kick_out(auto_control_t* kick)
     kick_mutex.take();
     {
         kick->functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    }
+    kick_mutex.give();
+    kick_mutex.take();
+    {
+        kick->functional_status->flywheel = E_FLYWHEEL_STATUS_OFF;
     }
     kick_mutex.give();
 }

@@ -40,6 +40,7 @@
 #include "dku/functional_task.hpp"
 #include "dku/opcontrol/rc_update_task.hpp"
 #include "dku/auto/auto_task.hpp"
+#include "dku/algorithm/positioning.hpp"
 /**
  * You should add more #includes here
  */

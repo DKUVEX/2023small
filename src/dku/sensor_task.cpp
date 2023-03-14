@@ -125,7 +125,7 @@ void sensor_task_fn(void* param)
         gps_data_update(&sensor_fetch.gps_back_data);
         /*test code*/
         //TODO: add a polt on pc to see the trend of gyro and acc(transfer com data to some apps?)
-        // pros::lcd::print(0, "position x: %lf", sensor_fetch.gps_front_data.gps_pos.x);
+        pros::lcd::print(0, "position x: %lf", sensor_fetch.gps_front_data.gps_pos.x);
         // pros::lcd::print(1, "position y: %lf", sensor_fetch.gps_front_data.gps_pos.y);
         // pros::lcd::print(2, "heading: %lf", sensor_fetch.gps_front_data.gps_pos.yaw);
         // pros::lcd::print(3, "gyro_x: %lf", sensor_fetch.gps_front_data.gps_gyro.x);

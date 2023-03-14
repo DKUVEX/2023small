@@ -25,10 +25,10 @@
 #include <cmath>
 //in the beginning of task ,wait a time
 //任务开始空闲一段时间
-#define AUTO_TASK_INIT_TIME       300
+#define AUTO_TASK_INIT_TIME       5000
 //auto task control time  2ms
 //自动任务控制间隔 2ms
-#define AUTO_TASK_TIME_MS          2
+#define AUTO_TASK_TIME_MS          SENSOR_CONTROL_TIME_MS
 #define PI (3.1415926535)
 #define FORWARD 1
 #define BACKWARD -1

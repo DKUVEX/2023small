@@ -121,15 +121,21 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
 {
     std::int32_t analog_right_x = 0; //simulate the joystick
     // double rad = atan2f((target_x - turn->current_pos.current_x), (target_y - turn->current_pos.current_y));
-    double rad = atan2f((target_x - turn->sensor_data->gps_front_data.gps_pos.x), (target_y - turn->sensor_data->gps_front_data.gps_pos.x));
+    double rad = atan2f((target_x - turn->sensor_data->gps_front_data.gps_pos.x), (target_y - turn->sensor_data->gps_front_data.gps_pos.y));
+    // double rad = atan2f((target_x - turn->sensor_data->gps_front_data.gps_pointer->get_status().x), (target_y - turn->sensor_data->gps_front_data.gps_pointer->get_status().y));
     double angle = rad*(180/PI);
     pros::lcd::print(0, "heading: ", turn->sensor_data->gps_front_data.gps_pos.yaw); 
-    printf("heading: %lf\n", turn->sensor_data->gps_front_data.gps_pos.yaw);
+    // printf("heading: %lf\n", turn->sensor_data->gps_front_data.gps_pos.yaw);
     // while (abs((int)(turn->current_pos.current_dir - angle))>=1) {
     pros::Mutex turn_mutex;
-    while (abs((int)(turn->sensor_data->gps_front_data.gps_pos.yaw - angle))>=20) {
+    std::int32_t angle_difference = abs((int)(turn->sensor_data->gps_front_data.gps_pos.yaw - angle));
+    // std::int32_t angle_difference = abs((int)(turn->sensor_data->gps_front_data.gps_pointer->get_status().yaw - angle));
+    if (angle_difference > 180) {
+        angle_difference = 360 - angle_difference;
+    }
+    while (angle_difference>=3) {
 
-        analog_right_x = 50;
+        analog_right_x = 30;
         turn_mutex.take();
         {
             turn->chassis_voltage[0] = analog_right_x;
@@ -138,10 +144,18 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
             turn->chassis_voltage[3] = -analog_right_x;
         }
         turn_mutex.give();
-        pros::lcd::print(2, "heading: %lf", turn->sensor_data->gps_front_data.gps_pos.yaw); 
-        rad = atan2f((target_x - turn->sensor_data->gps_front_data.gps_pos.x), (target_y - turn->sensor_data->gps_front_data.gps_pos.x));
-        angle = rad*(180/PI);
+        pros::lcd::print(2, "ANGLE: %lf", angle); 
+        printf("angle %5.5lf, yaw %5.5lf, yaw-angle %5d\n", angle, turn->sensor_data->gps_front_data.gps_pos.yaw, angle_difference);
+        // printf("angle %5.5lf, yaw %5.5lf, yaw-angle %5d\n", angle, turn->sensor_data->gps_front_data.gps_pointer->get_status().yaw, angle_difference);
+        // rad = atan2f((target_x - turn->sensor_data->gps_front_data.gps_pos.x), (target_y - turn->sensor_data->gps_front_data.gps_pos.y));
+        // angle = rad*(180/PI);
+        angle_difference = abs((int)(turn->sensor_data->gps_front_data.gps_pos.yaw - angle));
+        // angle_difference = abs((int)(turn->sensor_data->gps_front_data.gps_pointer->get_status().yaw - angle));
+        if (angle_difference > 180) {
+            angle_difference = 360 - angle_difference;
+        }
     }
+    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     turn_mutex.take();
     {
         turn->chassis_voltage[0] = 0;
@@ -204,10 +218,13 @@ void move_to(double target_x, double target_y, auto_control_t* move)
 {
     turn_to(target_x, target_y, move);
     std::int32_t analog_left_y = 0; //simulate the joystick
-    double distance = sqrt(pow((target_x-move->current_pos.current_x),2) + pow((target_y-move->current_pos.current_y),2));
-    while (abs((int)distance)>=0.05) {
-        int analog_left_y = 127;
-        pros::Mutex move_mutex;
+    // double distance = sqrt(pow((target_x - move->current_pos.current_x),2) + pow((target_y - move->current_pos.current_y),2));
+    double distance = sqrt(pow((target_x - move->sensor_data->gps_front_data.gps_pos.x),2) + pow((target_y - move->sensor_data->gps_front_data.gps_pos.y),2));
+    printf("distance %5.5lf\n", distance);
+
+    pros::Mutex move_mutex;
+    while (abs((int)(distance*100))>=5) {
+        int analog_left_y = 50;
         move_mutex.take();
         {
             move->chassis_voltage[0] = analog_left_y;
@@ -216,7 +233,18 @@ void move_to(double target_x, double target_y, auto_control_t* move)
             move->chassis_voltage[3] = analog_left_y;
         }
         move_mutex.give();
+        double distance = sqrt(pow((target_x - move->sensor_data->gps_front_data.gps_pos.x),2) + pow((target_y - move->sensor_data->gps_front_data.gps_pos.y),2));
+        printf("distance %5.5lf\n", distance);
     }
+    printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    move_mutex.take();
+    {
+        move->chassis_voltage[0] = 0;
+        move->chassis_voltage[1] = 0;
+        move->chassis_voltage[2] = 0;
+        move->chassis_voltage[3] = 0;
+    }
+    move_mutex.give();
 }
 
 /**
@@ -266,11 +294,14 @@ void auto_task_fn(void* param)
 
     pros::Task::delay(AUTO_TASK_INIT_TIME);
     auto_init(&auto_control);
-    std::uint32_t now = pros::millis();
-    while (true) {
-        turn_to(0,0,&auto_control);
-        pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
-    }
+    // std::uint32_t now = pros::millis();
+    // while (true) {
+    //     turn_to(1.8,1.8,&auto_control);
+    //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
+    // }
+
+    move_to(0,0,&auto_control);
+
     // turn_to(0,0,&auto_control);
     // std::uint32_t now_a = pros::millis();
     // // std::uint32_t now = pros::millis();

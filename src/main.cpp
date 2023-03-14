@@ -45,6 +45,8 @@ void initialize() {
                 TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
     auto_task.suspend();
     rc_update_task.suspend();
+    pros::Task tracking (tracking_1_fn,  (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tracking");
+
 }
 
 /**

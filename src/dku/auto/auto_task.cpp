@@ -77,6 +77,14 @@ void move_to(double target_x, double target_y, auto_control_t* move);
 void move_time(double direction, double time, auto_control_t* move);
 
 /**
+ * @brief           move a relative distance
+ * @param[in]       target_distance: aimed distance
+ * @param[in,out]   move: find current position,give chassis voltage
+ * @retval          null
+ */
+void move_relative(double target_distance, auto_control_t* move);
+
+/**
  * @brief           kick out 3 plates
  * @param[in,out]   kick: change the voltage of index
  * @retval          null
@@ -133,6 +141,7 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
     if (angle_difference > 180) {
         angle_difference = 360 - angle_difference;
     }
+    std::uint32_t now_1 = pros::millis();
     while (angle_difference>=3) {
 
         analog_right_x = 30;
@@ -147,13 +156,14 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
         pros::lcd::print(2, "ANGLE: %lf", angle); 
         printf("angle %5.5lf, yaw %5.5lf, yaw-angle %5d\n", angle, turn->sensor_data->gps_front_data.gps_pos.yaw, angle_difference);
         // printf("angle %5.5lf, yaw %5.5lf, yaw-angle %5d\n", angle, turn->sensor_data->gps_front_data.gps_pointer->get_status().yaw, angle_difference);
-        // rad = atan2f((target_x - turn->sensor_data->gps_front_data.gps_pos.x), (target_y - turn->sensor_data->gps_front_data.gps_pos.y));
-        // angle = rad*(180/PI);
+        rad = atan2f((target_x - turn->sensor_data->gps_front_data.gps_pos.x), (target_y - turn->sensor_data->gps_front_data.gps_pos.y));
+        angle = rad*(180/PI);
         angle_difference = abs((int)(turn->sensor_data->gps_front_data.gps_pos.yaw - angle));
         // angle_difference = abs((int)(turn->sensor_data->gps_front_data.gps_pointer->get_status().yaw - angle));
         if (angle_difference > 180) {
             angle_difference = 360 - angle_difference;
         }
+        pros::Task::delay_until(&now_1, AUTO_TASK_TIME_MS);
     }
     printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     turn_mutex.take();
@@ -167,14 +177,47 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
 }
 
 /**
- * @brief           let robot turn to specific point
+ * @brief           let robot turn a relative angle
  * @param[in]       target_angle: aimed position x
  * @param[in,out]   turn: find current position,give chassis voltage
  * @retval          null
  */
 void turn_relative(double target_angle, auto_control_t* turn)
 {
+    printf("turning");
+    double angle = 0;
+    std::int32_t analog_right_x = 0; //simulate the joystick
+    analog_right_x = 30;
+    pros::Mutex turn_mutex;
+    double yaw_gyro = 0;
+    std::uint32_t now_0 = pros::millis();
+    while (angle < target_angle) {
+        turn_mutex.take();
+        {
+            turn->chassis_voltage[0] = analog_right_x;
+            turn->chassis_voltage[1] = analog_right_x;
+            turn->chassis_voltage[2] = -analog_right_x;
+            turn->chassis_voltage[3] = -analog_right_x;
+        }
+        yaw_gyro = -turn->sensor_data->gps_front_data.gps_gyro.z;
+        pros::lcd::print(3, "z: %lf", turn->sensor_data->gps_front_data.gps_gyro.z);
+        pros::lcd::print(4, "x: %lf", turn->sensor_data->gps_front_data.gps_gyro.x);
+        pros::lcd::print(5, "y: %lf", turn->sensor_data->gps_front_data.gps_gyro.y);
+        pros::lcd::print(6, "time: %d", pros::millis());
 
+        angle += yaw_gyro * (AUTO_TASK_TIME_MS/100.0);
+        printf("angle %lf", angle);
+        pros::lcd::print(2, "angle: %lf", angle);
+        // pros::Task::delay_until(&now_0, AUTO_TASK_TIME_MS);
+    }
+    turn_mutex.take();
+    {
+        turn->chassis_voltage[0] = 0;
+        turn->chassis_voltage[1] = 0;
+        turn->chassis_voltage[2] = 0;
+        turn->chassis_voltage[3] = 0;
+    }
+    turn_mutex.give();
 }
 
 /**
@@ -223,7 +266,7 @@ void move_to(double target_x, double target_y, auto_control_t* move)
     printf("distance %5.5lf\n", distance);
 
     pros::Mutex move_mutex;
-    while (abs((int)(distance*100))>=5) {
+    while (abs((int)(distance*100))>=10) {
         int analog_left_y = 50;
         move_mutex.take();
         {
@@ -279,6 +322,49 @@ void move_time(double direction, double time, auto_control_t* move)
 }
 
 /**
+ * @brief           move a relative distance
+ * @param[in]       target_distance: aimed distance
+ * @param[in,out]   move: find current position,give chassis voltage
+ * @retval          null
+ */
+void move_relative(double target_distance, auto_control_t* move)
+{
+    double v0 = 0;
+    double vt = 0;
+    double x = 0;
+    double a = 0;
+    pros::Mutex turn_mutex;
+    std::int32_t analog_left_y = 70;
+    std::uint32_t now_2 = pros::millis();
+    while (x < target_distance) {
+        turn_mutex.take();
+        {
+            move->chassis_voltage[0] = analog_left_y;
+            move->chassis_voltage[1] = analog_left_y;
+            move->chassis_voltage[2] = analog_left_y;
+            move->chassis_voltage[3] = analog_left_y;
+        }
+        turn_mutex.give();
+        a = -move->sensor_data->gps_front_data.gps_acc.y;
+        v0 = vt;
+        vt = v0 + a*(AUTO_TASK_TIME_MS/100.0);
+        x += v0*(AUTO_TASK_TIME_MS/100.0) + 0.5*a*(AUTO_TASK_TIME_MS/100.0)*(AUTO_TASK_TIME_MS/100.0);
+        // printf("distance %lf", x);
+        pros::lcd::print(1, "distance: %lf", x);
+        pros::lcd::print(2, "acc: %lf", move->sensor_data->gps_front_data.gps_acc.y);
+        pros::Task::delay_until(&now_2, AUTO_TASK_TIME_MS);
+    }
+    turn_mutex.take();
+    {
+        move->chassis_voltage[0] = 0;
+        move->chassis_voltage[1] = 0;
+        move->chassis_voltage[2] = 0;
+        move->chassis_voltage[3] = 0;
+    }
+    turn_mutex.give();
+}
+
+/**
   * @brief          auto task. auto task is not a while true loop
   * @param[in]      param: null
   * @retval         none
@@ -300,7 +386,8 @@ void auto_task_fn(void* param)
     //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
     // }
 
-    move_to(0,0,&auto_control);
+    // turn_to(0,0,&auto_control);
+    turn_relative(0.785, &auto_control);
 
     // turn_to(0,0,&auto_control);
     // std::uint32_t now_a = pros::millis();

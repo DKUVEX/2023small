@@ -91,6 +91,13 @@ void move_relative(double target_distance, auto_control_t* move);
  */
 void kick_out(auto_control_t* kick);
 
+/**
+ * @brief           rotate the roller
+ * @param[in]       time: the rotate time, unit: ms
+ * @param[in,out]   rotate: the control pointer
+ * @retval          null
+ */
+void rotate_roller(std::int32_t time , auto_control_t* rotate);
 
 /**
  * @brief           auto control init
@@ -177,7 +184,7 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
 }
 
 /**
- * @brief           let robot turn a relative angle
+ * @brief           let robot turn a relative angle, unit is degree(not rad!)
  * @param[in]       target_angle: aimed position x
  * @param[in,out]   turn: find current position,give chassis voltage
  * @retval          null
@@ -199,16 +206,13 @@ void turn_relative(double target_angle, auto_control_t* turn)
             turn->chassis_voltage[2] = -analog_right_x;
             turn->chassis_voltage[3] = -analog_right_x;
         }
-        yaw_gyro = -turn->sensor_data->gps_front_data.gps_gyro.z;
-        pros::lcd::print(3, "z: %lf", turn->sensor_data->gps_front_data.gps_gyro.z);
-        pros::lcd::print(4, "x: %lf", turn->sensor_data->gps_front_data.gps_gyro.x);
-        pros::lcd::print(5, "y: %lf", turn->sensor_data->gps_front_data.gps_gyro.y);
-        pros::lcd::print(6, "time: %d", pros::millis());
-
-        angle += yaw_gyro * (AUTO_TASK_TIME_MS/100.0);
-        printf("angle %lf", angle);
-        pros::lcd::print(2, "angle: %lf", angle);
-        // pros::Task::delay_until(&now_0, AUTO_TASK_TIME_MS);
+        turn_mutex.give();
+        yaw_gyro = turn->sensor_data->gps_front_data.gps_gyro.z;
+        angle += yaw_gyro * (AUTO_TASK_TIME_MS/1000.0);
+        
+        printf("angle %lf\n", angle);
+        pros::lcd::print(2, "angle: %lf\n", angle);
+        pros::Task::delay_until(&now_0, AUTO_TASK_TIME_MS);
     }
     turn_mutex.take();
     {
@@ -322,7 +326,7 @@ void move_time(double direction, double time, auto_control_t* move)
 }
 
 /**
- * @brief           move a relative distance
+ * @brief           move a relative distance, unit is meter
  * @param[in]       target_distance: aimed distance
  * @param[in,out]   move: find current position,give chassis voltage
  * @retval          null
@@ -349,7 +353,7 @@ void move_relative(double target_distance, auto_control_t* move)
         v0 = vt;
         vt = v0 + a*(AUTO_TASK_TIME_MS/100.0);
         x += v0*(AUTO_TASK_TIME_MS/100.0) + 0.5*a*(AUTO_TASK_TIME_MS/100.0)*(AUTO_TASK_TIME_MS/100.0);
-        // printf("distance %lf", x);
+        printf("distance %lf", x);
         pros::lcd::print(1, "distance: %lf", x);
         pros::lcd::print(2, "acc: %lf", move->sensor_data->gps_front_data.gps_acc.y);
         pros::Task::delay_until(&now_2, AUTO_TASK_TIME_MS);
@@ -387,7 +391,9 @@ void auto_task_fn(void* param)
     // }
 
     // turn_to(0,0,&auto_control);
-    turn_relative(0.785, &auto_control);
+    turn_relative(90, &auto_control);
+    move_relative(0.5, &auto_control);
+    turn_relative(90, &auto_control);
 
     // turn_to(0,0,&auto_control);
     // std::uint32_t now_a = pros::millis();
@@ -445,6 +451,10 @@ void kick_out(auto_control_t* kick)
     pros::Mutex kick_mutex;
     kick_mutex.take();
     {
+        kick->functional_status->flywheel = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+    }
+    kick_mutex.take();
+    {
         kick->functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
     }
     kick_mutex.give();
@@ -457,6 +467,28 @@ void kick_out(auto_control_t* kick)
 }
 
 /**
+ * @brief           rotate the roller
+ * @param[in]       time: the rotate time, unit: ms
+ * @param[in,out]   rotate: the control pointer
+ * @retval          null
+ */
+void rotate_roller(std::int32_t time , auto_control_t* rotate)
+{
+    pros::Mutex rotate_mutex;
+    rotate_mutex.take();
+    {
+        rotate->functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    }
+    rotate_mutex.give();
+    pros::delay(time);
+    rotate_mutex.take();
+    {
+        rotate->functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    }
+    rotate_mutex.give();
+}
+
+/**
  * @brief            get the current status struck(x,y,direction)
  * @param[out]       null
  * @return           current_status_t*
@@ -466,3 +498,4 @@ current_status_t* get_current_status_pointer(void)
 {
     return &auto_control.current_pos;
 }
+

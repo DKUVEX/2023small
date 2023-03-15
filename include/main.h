@@ -38,7 +38,8 @@
 #include "dku/chassis_task.hpp"
 #include "dku/sensor_task.hpp"
 #include "dku/functional_task.hpp"
-
+#include "dku/opcontrol/rc_update_task.hpp"
+#include "dku/auto/auto_task.hpp"
 /**
  * You should add more #includes here
  */

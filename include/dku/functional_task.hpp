@@ -16,8 +16,8 @@
   @endverbatim
   ****************************(C) COPYRIGHT 2023 Blue Bear****************************
 */
-#ifndef FUNCTIONAL_task_H
-#define FUNCTIONAL_task_H
+#ifndef FUNCTIONAL_TASK_H
+#define FUNCTIONAL_TASK_H
 
 #include "api.h"
 #include "dku/remote_control.hpp"
@@ -30,12 +30,15 @@
 //竞技任务控制间隔 2ms
 #define FUNCTIONAL_CONTROL_TIME_MS      2
 
-#define INTAKE_MOTOR_PORT               7
-#define FLYWHEEL_MOTOR_PORT             6
-#define FLYWHEEL_MOTOR_2_PORT           5
-#define INDEX_MOTOR_PORT                10
-#define ROLLER_MOTOR_PORT               4
+#define INTAKE_MOTOR_PORT               10
+#define FLYWHEEL_MOTOR_PORT             12
+#define FLYWHEEL_MOTOR_2_PORT           21
+#define INDEX_MOTOR_PORT                1
+#define ROLLER_MOTOR_PORT               3
+#define EXTENSION_MOTOR_PORT            5
+
 #define GAS_GPIO_PORT                   1 // port A
+#define EXTENSION_GPIO_PORT             2 // port B
 
 #define FUNCTION_MOTOR_GEAR_RATIO       (pros::E_MOTOR_GEARSET_18)
 #define FUCTION_MOTOR_ENCODER_UNIT      (pros::E_MOTOR_ENCODER_DEGREES)
@@ -67,6 +70,30 @@ typedef enum flywheel_status_e
     E_FLYWHEEL_STATUS_SPEED_HIGH,
 } flywheel_status_e_t;
 
+typedef enum functional_motor_status_e
+{
+    E_FUNCTIONAL_MOTOR_STATUS_OFF = 0,
+    E_FUNCTIONAL_MOTOR_STATUS_FORWARD,
+    E_FUNCTIONAL_MOTOR_STATUS_BACKWARD,
+} functional_motor_status_e_t;
+
+typedef enum functional_adi_status_e
+{
+    E_FUNCTIONAL_ADI_STATUS_OFF = 0,
+    E_FUNCTIONAL_ADI_STATUS_PORT_HIGH,
+    E_FUNCTIONAL_ADI_STATUS_PORT_LOW,
+} functional_adi_status_e_t;
+
+typedef struct {
+    std::int32_t flywheel;
+    std::int32_t index_motor;
+    std::int32_t intake_motor;
+    std::int32_t roller_motor;
+    std::int32_t gas_gpio;
+    std::int32_t extension_gpio;
+    std::int32_t extension_motor;
+}functional_device_status_t;
+
 typedef struct {
     pros::Motor *motor_status;
     float speed;
@@ -84,7 +111,9 @@ typedef struct {
     functional_motor_t motor_index;   // motor data.电机数据
     functional_motor_t motor_intake;   // motor data.电机数据
     functional_motor_t motor_roller;   // motor data.电机数据
+    functional_motor_t motor_extension;   // motor data.电机数据
     pros::ADIPort *gas_gpio;           // control gas
+    pros::ADIPort *extension_gpio;           // control extension
 }functional_behaviour_t;
 
 /**
@@ -98,5 +127,12 @@ typedef struct {
   * @retval         none
   */
 void functional_task_fn(void* param);
+
+/**
+ * @brief           get functional device status. off/forward/backward
+ * @param[in]       none
+ * @retval          functional device status point
+ */
+functional_device_status_t *get_functional_device_status(void);
 
 #endif

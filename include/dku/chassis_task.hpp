@@ -34,9 +34,9 @@
 #define CHASSIS_MOTOR_GEAR_RATIO (pros::E_MOTOR_GEARSET_18)
 #define CHASSIS_MOTOR_ENCODER_UNIT (pros::E_MOTOR_ENCODER_DEGREES)
 
-#define CHASSIS_MOTOR_LA_PORT 2
-#define CHASSIS_MOTOR_LB_PORT 3
-#define CHASSIS_MOTOR_RA_PORT 9
+#define CHASSIS_MOTOR_LA_PORT 20
+#define CHASSIS_MOTOR_LB_PORT 9
+#define CHASSIS_MOTOR_RA_PORT 11
 #define CHASSIS_MOTOR_RB_PORT 8
 
 typedef struct {
@@ -62,5 +62,15 @@ typedef struct {
   * @retval         none
   */
 void chassis_task_fn(void* param);
-
+/**
+  * @brief          get chassis voltage point
+  * @param[in]      none
+  * @retval         chassis voltage data point
+  */
+/**
+  * @brief          获取底盘电压数据指针
+  * @param[in]      none
+  * @retval         底盘电压数据指针
+  */
+std::int32_t *get_chassis_voltage_point(void);
 #endif

@@ -35,7 +35,7 @@
 #define FLYWHEEL_MOTOR_2_PORT           21
 #define INDEX_MOTOR_PORT                1
 #define ROLLER_MOTOR_PORT               3
-#define EXTENSION_MOTOR_PORT            4
+#define EXTENSION_MOTOR_PORT            5
 
 #define GAS_GPIO_PORT                   1 // port A
 #define EXTENSION_GPIO_PORT             2 // port B

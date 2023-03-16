@@ -3,8 +3,9 @@
 
 pros::Task auto_task (auto_task_fn, NULL, TASK_PRIORITY_DEFAULT,
         TASK_STACK_DEPTH_DEFAULT, "auto_task");
-pros::Task rc_update_task (rc_update_task_fn, NULL, TASK_PRIORITY_DEFAULT,
+pros::Task rc_update_task (rc_update_task_fn, NULL, TASK_PRIORITY_MAX,
         TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
+
 /**
  * A callback function for LLEMU's center button.
  *
@@ -39,10 +40,10 @@ void initialize() {
                 TASK_STACK_DEPTH_DEFAULT, "chassis_task");
     pros::Task functional_task (functional_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
                 TASK_STACK_DEPTH_DEFAULT, "functional_task");
-    pros::Task auto_task (auto_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
-                TASK_STACK_DEPTH_DEFAULT, "auto_task");
-    pros::Task rc_update_task (rc_update_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
-                TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
+    // pros::Task auto_task (auto_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
+    //             TASK_STACK_DEPTH_DEFAULT, "auto_task");
+    // pros::Task rc_update_task (rc_update_task_fn, (void*)"PROS", TASK_PRIORITY_MAX,
+    //             TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
     auto_task.suspend();
     rc_update_task.suspend();
     pros::Task tracking (tracking_1_fn,  (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tracking");

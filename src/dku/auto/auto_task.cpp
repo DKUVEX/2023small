@@ -123,6 +123,7 @@ void auto_init(auto_control_t* init)
     // init->current_pos.current_x = 
     // init->current_pos.current_y = 
     // init->current_pos.current_dir = 
+    //
 }
 
 /**

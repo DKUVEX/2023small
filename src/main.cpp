@@ -1,10 +1,10 @@
 #include "main.h"
 
 
-pros::Task auto_task (auto_task_fn, NULL, TASK_PRIORITY_DEFAULT,
-        TASK_STACK_DEPTH_DEFAULT, "auto_task");
-pros::Task rc_update_task (rc_update_task_fn, NULL, TASK_PRIORITY_MAX,
-        TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
+// pros::Task auto_task (auto_task_fn, NULL, TASK_PRIORITY_DEFAULT,
+//         TASK_STACK_DEPTH_DEFAULT, "auto_task");
+// pros::Task rc_update_task (rc_update_task_fn, NULL, TASK_PRIORITY_MAX,
+//         TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
 
 /**
  * A callback function for LLEMU's center button.
@@ -44,8 +44,8 @@ void initialize() {
     //             TASK_STACK_DEPTH_DEFAULT, "auto_task");
     // pros::Task rc_update_task (rc_update_task_fn, (void*)"PROS", TASK_PRIORITY_MAX,
     //             TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
-    auto_task.suspend();
-    rc_update_task.suspend();
+    // auto_task.suspend();
+    // rc_update_task.suspend();
     pros::Task tracking (tracking_1_fn,  (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tracking");
 
 }
@@ -105,7 +105,7 @@ void autonomous() {
 
     // pros::Task auto_task (auto_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
     //         TASK_STACK_DEPTH_DEFAULT, "auto_task");
-    auto_task.resume();
+    // auto_task.resume();
 }
 
 /**
@@ -126,13 +126,13 @@ void opcontrol() {
 	pros::Motor left_mtr(1);
 	pros::Motor right_mtr(2);
 
-    // pros::Task rc_update_task (rc_update_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
-    //             TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
-    if (auto_task.get_state() != pros::E_TASK_STATE_SUSPENDED)
-    {
-        auto_task.suspend();
-    }
-    rc_update_task.resume();
+    pros::Task rc_update_task (rc_update_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
+                TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
+    // if (auto_task.get_state() != pros::E_TASK_STATE_SUSPENDED)
+    // {
+    //     auto_task.suspend();
+    // }
+    // rc_update_task.resume();
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,

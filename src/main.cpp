@@ -79,7 +79,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-    if (rc_update_task.get_state() != pros::E_TASK_STATE_DELETED)
+    if (rc_update_task.get_state() != pros::E_TASK_STATE_SUSPENDED)
     {
         rc_update_task.suspend();
     }
@@ -108,7 +108,7 @@ void opcontrol() {
 
     // pros::Task rc_update_task (rc_update_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
     //             TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
-    if (auto_task.get_state() != pros::E_TASK_STATE_DELETED)
+    if (auto_task.get_state() != pros::E_TASK_STATE_SUSPENDED)
     {
         auto_task.suspend();
     }

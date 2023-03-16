@@ -94,13 +94,13 @@ void autonomous() {
     // kick_out(&auto_control);
 
     
-    pros:: Task this_task = pros::Task::current();
-    this_task.remove();
+    // pros:: Task this_task = pros::Task::current();
+    // this_task.remove();
 
-    if (rc_update_task.get_state() != pros::E_TASK_STATE_SUSPENDED)
-    {
-        rc_update_task.suspend();
-    }
+    // if (rc_update_task.get_state() != pros::E_TASK_STATE_SUSPENDED)
+    // {
+    //     rc_update_task.suspend();
+    // }
 
 
     // pros::Task auto_task (auto_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,

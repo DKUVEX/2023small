@@ -80,10 +80,29 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+
+    std::cout << "auto task runs" << std::endl;
+
+    pros::Task::delay(AUTO_TASK_INIT_TIME);
+    auto_init(&auto_control);
+
+    // turn_relative(90, &auto_control);
+    move_relative(0.5, &auto_control);
+    // turn_relative(90, &auto_control);
+
+    rotate_roller(300, &auto_control);
+    // kick_out(&auto_control);
+
+    
+    pros:: Task this_task = pros::Task::current();
+    this_task.remove();
+
     if (rc_update_task.get_state() != pros::E_TASK_STATE_SUSPENDED)
     {
         rc_update_task.suspend();
     }
+
+
     // pros::Task auto_task (auto_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
     //         TASK_STACK_DEPTH_DEFAULT, "auto_task");
     auto_task.resume();

@@ -15,95 +15,13 @@
  * @endverbatim
  * ****************************(C) COPYRIGHT 2023 Blue Bear****************************
  */
-#include "dku/auto/auto_task.hpp"
-#include "dku/functional_task.hpp"
-#include "dku/sensor_task.hpp"
+#include "dkuto/au/auttional_task.hpp"
+#include "dku/senso_task.hpp"
+#include "dku/funcor_task.hpp"
 #include "pros/rtos.hpp"
 #include <cstdint>
 
 
-auto_control_t auto_control;
-
-/**
- * @brief           auto control init
- * @param[in,out]   init:
- * @retval          null
- */
-void auto_init(auto_control_t* init);
-
-
-/**
- * @brief           let robot turn to specific point
- * @param[in]       target_x: aimed position x
- * @param[in]       target_y: aimed position y
- * @param[in,out]   turn: find current position,give chassis voltage
- * @retval          null
- */
-void turn_to(double target_x, double target_y, auto_control_t* turn);
-
-/**
- * @brief           let robot turn to specific point
- * @param[in]       target_angle: aimed position x
- * @param[in,out]   turn: find current position,give chassis voltage
- * @retval          null
- */
-void turn_relative(double target_angle, auto_control_t* turn);
-
-/**
- * @brief           let robot turn to specific point
- * @param[in]       direction: direction, -1 or +1
- * @param[in]       time: a period of time
- * @param[in,out]   turn: find current position,give chassis voltage
- * @retval          null
- */
-void turn_time(double direction, double time, auto_control_t* turn);
-
-/**
- * @brief           let robot move to specific point
- * @param[in]       target_x: aimed position x
- * @param[in]       target_y: aimed position y
- * @param[in,out]   move: find current position,give chassis voltage
- * @retval          null
- */
-void move_to(double target_x, double target_y, auto_control_t* move);
-
-/**
- * @brief           let robot turn to specific point
- * @param[in]       direction: direction, -1 or +1
- * @param[in]       time: a period of time
- * @param[in,out]   turn: find current position,give chassis voltage
- * @retval          null
- */
-void move_time(double direction, double time, auto_control_t* move);
-
-/**
- * @brief           move a relative distance
- * @param[in]       target_distance: aimed distance
- * @param[in,out]   move: find current position,give chassis voltage
- * @retval          null
- */
-void move_relative(double target_distance, auto_control_t* move);
-
-/**
- * @brief           kick out 3 plates
- * @param[in,out]   kick: change the voltage of index
- * @retval          null
- */
-void kick_out(auto_control_t* kick);
-
-/**
- * @brief           rotate the roller
- * @param[in]       time: the rotate time, unit: ms
- * @param[in,out]   rotate: the control pointer
- * @retval          null
- */
-void rotate_roller(std::int32_t time , auto_control_t* rotate);
-
-/**
- * @brief           auto control init
- * @param[in,out]   init:
- * @retval          null
- */
 void auto_init(auto_control_t* init)
 {
 
@@ -381,20 +299,21 @@ void move_relative(double target_distance, auto_control_t* move)
   */
 void auto_task_fn(void* param)
 {
-    std::cout << "auto task runs" << std::endl;
+    // std::cout << "auto task runs" << std::endl;
 
-    pros::Task::delay(AUTO_TASK_INIT_TIME);
-    auto_init(&auto_control);
+    // pros::Task::delay(AUTO_TASK_INIT_TIME);
+    // auto_init(&auto_control);
 
-    // turn_relative(90, &auto_control);
-    move_relative(2, &auto_control);
-    // turn_relative(90, &auto_control);
+    // // turn_relative(90, &auto_control);
+    // move_relative(0.5, &auto_control);
+    // // turn_relative(90, &auto_control);
 
-    rotate_roller(300, &auto_control);
-    // kick_out(&auto_control);
+    // rotate_roller(300, &auto_control);
+    // // kick_out(&auto_control);
 
     
-    
+    // pros:: Task this_task = pros::Task::current();
+    // this_task.remove();
     
     // turn_to(0,0,&auto_control);
     // std::uint32_t now_a = pros::millis();
@@ -440,7 +359,7 @@ void auto_task_fn(void* param)
     //         auto_mutes.give();
     //     }
     // }
-
+    
 }
 /**
  * @brief           kick out 3 plates
@@ -502,8 +421,7 @@ void rotate_roller(std::int32_t time , auto_control_t* rotate)
  * @return           current_status_t*
  * @retval           
  */
-current_status_t* get_current_status_pointer(void)
-{
-    return &auto_control.current_pos;
-}
+
+
+
 

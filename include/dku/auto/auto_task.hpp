@@ -66,4 +66,93 @@ void auto_task_fn(void* param);
  * @retval         
  */
 current_status_t* get_current_status_pointer(void);
+
+auto_control_t auto_control;
+
+/**
+ * @brief           auto control init
+ * @param[in,out]   init:
+ * @retval          null
+ */
+void auto_init(auto_control_t* init);
+
+
+/**
+ * @brief           let robot turn to specific point
+ * @param[in]       target_x: aimed position x
+ * @param[in]       target_y: aimed position y
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval          null
+ */
+void turn_to(double target_x, double target_y, auto_control_t* turn);
+
+/**
+ * @brief           let robot turn to specific point
+ * @param[in]       target_angle: aimed position x
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval          null
+ */
+void turn_relative(double target_angle, auto_control_t* turn);
+
+/**
+ * @brief           let robot turn to specific point
+ * @param[in]       direction: direction, -1 or +1
+ * @param[in]       time: a period of time
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval          null
+ */
+void turn_time(double direction, double time, auto_control_t* turn);
+
+/**
+ * @brief           let robot move to specific point
+ * @param[in]       target_x: aimed position x
+ * @param[in]       target_y: aimed position y
+ * @param[in,out]   move: find current position,give chassis voltage
+ * @retval          null
+ */
+void move_to(double target_x, double target_y, auto_control_t* move);
+
+/**
+ * @brief           let robot turn to specific point
+ * @param[in]       direction: direction, -1 or +1
+ * @param[in]       time: a period of time
+ * @param[in,out]   turn: find current position,give chassis voltage
+ * @retval          null
+ */
+void move_time(double direction, double time, auto_control_t* move);
+
+/**
+ * @brief           move a relative distance
+ * @param[in]       target_distance: aimed distance
+ * @param[in,out]   move: find current position,give chassis voltage
+ * @retval          null
+ */
+void move_relative(double target_distance, auto_control_t* move);
+
+/**
+ * @brief           kick out 3 plates
+ * @param[in,out]   kick: change the voltage of index
+ * @retval          null
+ */
+void kick_out(auto_control_t* kick);
+
+/**
+ * @brief           rotate the roller
+ * @param[in]       time: the rotate time, unit: ms
+ * @param[in,out]   rotate: the control pointer
+ * @retval          null
+ */
+void rotate_roller(std::int32_t time , auto_control_t* rotate);
+
+/**
+ * @brief           auto control init
+ * @param[in,out]   init:
+ * @retval          null
+ */
+
+current_status_t* get_current_status_pointer(void)
+{
+    return &auto_control.current_pos;
+}
+
 #endif

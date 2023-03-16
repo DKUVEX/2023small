@@ -385,13 +385,16 @@ void auto_task_fn(void* param)
     pros::Task::delay(AUTO_TASK_INIT_TIME);
     auto_init(&auto_control);
 
-    turn_relative(90, &auto_control);
-    move_relative(0.5, &auto_control);
-    turn_relative(90, &auto_control);
+    // turn_relative(90, &auto_control);
+    move_relative(2, &auto_control);
+    // turn_relative(90, &auto_control);
 
-    rotate_roller(3000, &auto_control);
-    kick_out(&auto_control);
+    rotate_roller(300, &auto_control);
+    // kick_out(&auto_control);
 
+    
+    
+    
     // turn_to(0,0,&auto_control);
     // std::uint32_t now_a = pros::millis();
     // // std::uint32_t now = pros::millis();

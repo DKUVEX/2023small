@@ -46,7 +46,7 @@ typedef struct {
     sensor_data_t *sensor_data;
 }auto_control_t;
 
-
+extern auto_control_t auto_control;
 /**
   * @brief          finctional task, osDelay AUTO_TASK_TIME_MS (2ms) 
   * @param[in]      param: null
@@ -68,7 +68,7 @@ void auto_task_fn(void* param);
 
 
 
-auto_control_t auto_control;
+
 
 current_status_t* get_current_status_pointer(void);
 

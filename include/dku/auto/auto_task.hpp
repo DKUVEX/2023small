@@ -65,9 +65,12 @@ void auto_task_fn(void* param);
  * @return          current_status_t*
  * @retval         
  */
-current_status_t* get_current_status_pointer(void);
+
+
 
 auto_control_t auto_control;
+
+current_status_t* get_current_status_pointer(void)
 
 /**
  * @brief           auto control init
@@ -150,9 +153,5 @@ void rotate_roller(std::int32_t time , auto_control_t* rotate);
  * @retval          null
  */
 
-current_status_t* get_current_status_pointer(void)
-{
-    return &auto_control.current_pos;
-}
 
 #endif

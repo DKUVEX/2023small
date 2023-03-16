@@ -239,3 +239,12 @@ void flywheel_speed_control_withoutpid(functional_motor_t *motor, std::int32_t s
         motor->motor_status->move_voltage(motor->set_voltage);
     }
 }
+/**
+ * @brief           get functional device status. off/forward/backward
+ * @param[in]       none
+ * @retval          functional device status point
+ */
+functional_device_status_t *get_functional_device_status(void)
+{
+    return &functional_devices;
+}

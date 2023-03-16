@@ -25,7 +25,6 @@ pros::Motor chassis_motor_la(CHASSIS_MOTOR_LA_PORT, CHASSIS_MOTOR_GEAR_RATIO, fa
 pros::Motor chassis_motor_lb(CHASSIS_MOTOR_LB_PORT, CHASSIS_MOTOR_GEAR_RATIO, false, CHASSIS_MOTOR_ENCODER_UNIT);
 pros::Motor chassis_motor_ra(CHASSIS_MOTOR_RA_PORT, CHASSIS_MOTOR_GEAR_RATIO, true, CHASSIS_MOTOR_ENCODER_UNIT);
 pros::Motor chassis_motor_rb(CHASSIS_MOTOR_RB_PORT, CHASSIS_MOTOR_GEAR_RATIO, true, CHASSIS_MOTOR_ENCODER_UNIT);
-static std::int32_t chassis_motor_voltage[4] = {0,0,0,0};
 
 /**
   * @brief          "chassis_move" valiable initialization, include pid initialization, remote control data point initialization, chassis motors
@@ -81,23 +80,18 @@ void chassis_task_fn(void* param)
     std::uint32_t now = pros::millis();
     while (true) {
         // Do opcontrol things
-        for (int i=0; i<=3; i++) {
-            chassis_move.motor_chassis[i].motor_status->move(chassis_motor_voltage[i]);
-        }
+        chassis_move.motor_chassis[0].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
+                                                        +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
+                                                        +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
+        chassis_move.motor_chassis[1].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
+                                                        -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
+                                                        +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
+        chassis_move.motor_chassis[2].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
+                                                        -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
+                                                        -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
+        chassis_move.motor_chassis[3].motor_status->move(chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)
+                                                        +chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)
+                                                        -chassis_move.chassis_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
         pros::Task::delay_until(&now, CHASSIS_CONTROL_TIME_MS);
     }
-}
-/**
-  * @brief          get chassis voltage point
-  * @param[in]      none
-  * @retval         chassis voltage data point
-  */
-/**
-  * @brief          获取底盘电压数据指针
-  * @param[in]      none
-  * @retval         底盘电压数据指针
-  */
-std::int32_t *get_chassis_voltage_point(void)
-{
-    return chassis_motor_voltage;
 }

@@ -42,7 +42,7 @@ typedef struct {
 typedef struct {
     std::int32_t *chassis_voltage;
     functional_device_status_t *functional_status;
-    current_status_t current_pos;
+    current_status_t current_pos; 
     sensor_data_t *sensor_data;
 }auto_control_t;
 
@@ -70,7 +70,7 @@ void auto_task_fn(void* param);
 
 auto_control_t auto_control;
 
-current_status_t* get_current_status_pointer(void)
+current_status_t* get_current_status_pointer(void);
 
 /**
  * @brief           auto control init
@@ -148,6 +148,8 @@ void kick_out(auto_control_t* kick);
 void rotate_roller(std::int32_t time , auto_control_t* rotate);
 
 /**
+ 
+ 
  * @brief           auto control init
  * @param[in,out]   init:
  * @retval          null

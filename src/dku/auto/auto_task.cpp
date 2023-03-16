@@ -422,7 +422,7 @@ void rotate_roller(std::int32_t time , auto_control_t* rotate)
  * @retval           
  */
 
-get_current_status_pointer(void)
+current_status_t* get_current_status_pointer(void)
 {
     return &auto_control.current_pos;
 }

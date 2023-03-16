@@ -15,9 +15,9 @@
  * @endverbatim
  * ****************************(C) COPYRIGHT 2023 Blue Bear****************************
  */
-#include "dkuto/au/auttional_task.hpp"
-#include "dku/senso_task.hpp"
-#include "dku/funcor_task.hpp"
+#include "dku/auto/auto_task.hpp"
+#include "dku/functional_task.hpp"
+#include "dku/sensor_task.hpp"
 #include "pros/rtos.hpp"
 #include <cstdint>
 

@@ -89,7 +89,7 @@ void autonomous() {
         pros::Task::delay(1000);
     move_back_relative(0.05,&auto_control);
         pros::Task::delay(1000);
-    turn_right_relative(120, &auto_control);
+    turn_left_relative(120, &auto_control);
         pros::Task::delay(1000);
     // rotate_roller(180, &auto_control);
     // turn_relative(-120, 3&auto_control);

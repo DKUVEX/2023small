@@ -152,7 +152,7 @@ void turn_left_relative(double target_angle, auto_control_t* turn)
     pros::Mutex turn_mutex;
     double yaw_gyro = 0;
     std::uint32_t now_0 = pros::millis();
-    while (angle < target_angle) {
+    while (-angle < target_angle) {
         turn_mutex.take();
         {
             turn->chassis_voltage[0] = -analog_right_x;

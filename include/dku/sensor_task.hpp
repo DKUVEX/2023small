@@ -64,7 +64,7 @@ typedef struct {
   * @retval         none
   */
 /**
-  * @brief          传感器任务，间隔 SENSOR_CONTROL_TIME_MS 2ms
+  * @brief          传感器任务，间隔 SENSOR_CONTROL_TIME_MS 5ms
   * @param[in]      param: 空
   * @retval         none
   */

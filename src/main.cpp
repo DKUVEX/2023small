@@ -87,10 +87,16 @@ void autonomous() {
     auto_init(&auto_control);
 
     // turn_relative(90, &auto_control);
+    move_relative(0.05, &auto_control);
+    rotate_roller(180, &auto_control);
+    turn_relative(-120, &auto_control);
+    move_relative(-0.2, &auto_control);
+    move_relative(-0.2, &auto_control);
+    turn_relative(90, &auto_control);
     move_relative(0.5, &auto_control);
-    // turn_relative(90, &auto_control);
+    turn_relative(90, &auto_control);
 
-    rotate_roller(300, &auto_control);
+    
     // kick_out(&auto_control);
 
     

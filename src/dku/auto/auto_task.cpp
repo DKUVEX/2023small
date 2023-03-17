@@ -18,6 +18,7 @@
 #include "dku/auto/auto_task.hpp"
 #include "dku/functional_task.hpp"
 #include "pros/rtos.hpp"
+#include "dku/sensor_task.hpp"
 #include <cstdint>
 
 
@@ -49,6 +50,7 @@ void turn_to(double target_x, double target_y, auto_control_t* turn);
 void turn_relative(double target_angle, auto_control_t* turn);
 
 /**
+
  * @brief           let robot turn to specific point
  * @param[in]       direction: direction, -1 or +1
  * @param[in]       time: a period of time
@@ -92,6 +94,17 @@ void horizontal_time(double direction, double time, auto_control_t* move);
 void kick_out(auto_control_t* kick);
 
 
+
+/**
+ * @brief           rotate the roller
+ * @param[in]       time: the rotate time, unit: ms
+ * @param[in,out]   rotate: the control pointer
+ * @retval          null
+ */
+void rotate_roller(std::int32_t time , auto_control_t* rotate);
+
+void move_relative(double target_distance, auto_control_t* move);
+
 /**
  * @brief           auto control init
  * @param[in,out]   init:
@@ -99,19 +112,22 @@ void kick_out(auto_control_t* kick);
  */
 void auto_init(auto_control_t* init)
 {
-    init->chassis_voltage = get_chassis_voltage_point();
+   init->chassis_voltage = get_chassis_voltage_point();
     init->functional_status = get_functional_device_status();
-    // pros::Mutex init_mutex;
-    // init_mutex.take();
+    init->sensor_data = get_sensor_data_point();
+    pros::Mutex init_mutex;
+    init_mutex.take();
     {
-        // init->functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
-        // init->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+        // printf("here2");
+        init->functional_status->flywheel = E_FLYWHEEL_STATUS_OFF;
+        init->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
         // init->functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+// printf("1");
     }
-    // init_mutex.give();
-    // init->current_pos.current_x = 
-    // init->current_pos.current_y = 
-    // init->current_pos.current_dir = 
+    init_mutex.give();
+// printf("2");
+
+
 }
 
 /**
@@ -237,6 +253,42 @@ void move_time(double direction, double time, auto_control_t* move)
     }
     turn_mutex.give();
 }
+void move_relative(double target_distance, auto_control_t* move)
+{
+    double v0 = 0;
+    double vt = 0;
+    double x = 0;
+    double a = 0;
+    pros::Mutex turn_mutex;
+    std::int32_t analog_left_y = 70;
+    std::uint32_t now_2 = pros::millis();
+    while (x < target_distance) {
+        turn_mutex.take();
+        {
+            move->chassis_voltage[0] = analog_left_y;
+            move->chassis_voltage[1] = analog_left_y;
+            move->chassis_voltage[2] = analog_left_y;
+            move->chassis_voltage[3] = analog_left_y;
+        }
+        turn_mutex.give();
+        a = -move->sensor_data->gps_front_data.gps_acc.y;
+        v0 = vt;
+        vt = v0 + a*(AUTO_TASK_TIME_MS/100.0);
+        x += v0*(AUTO_TASK_TIME_MS/100.0) + 0.5*a*(AUTO_TASK_TIME_MS/100.0)*(AUTO_TASK_TIME_MS/100.0);
+        printf("distance %lf", x);
+        pros::lcd::print(1, "distance: %lf", x);
+        pros::lcd::print(2, "acc: %lf", move->sensor_data->gps_front_data.gps_acc.y);
+        pros::Task::delay_until(&now_2, AUTO_TASK_TIME_MS);
+    }
+    turn_mutex.take();
+    {
+        move->chassis_voltage[0] = 0;
+        move->chassis_voltage[1] = 0;
+        move->chassis_voltage[2] = 0;
+        move->chassis_voltage[3] = 0;
+    }
+    turn_mutex.give();
+}
 
 /**
   * @brief          auto task. auto task is not a while true loop
@@ -253,56 +305,81 @@ void auto_task_fn(void* param)
     std::cout << "auto task runs" << std::endl;
     // pros::Task::delay(AUTO_TASK_INIT_TIME);
     auto_init(&auto_control);
+    horizontal_time(0.1, 1, &auto_control);
+//    move_relative(0.1, &auto_control);
+    // pros::delay(500);
+
+    rotate_roller(0.2, &auto_control);
+
+   
     // std::uint32_t now = pros::millis();
     // while (true) {
     //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
     // }
-    std::int32_t now_1 = pros::millis();
-    horizontal_time(FORWARD, 1310, &auto_control);
-    move_time(BACKWARD, 105, &auto_control);
-    pros::Mutex auto_mutex;
-    auto_mutex.take();
-    {
-        auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
-    }
-    auto_mutex.give();
-    pros::delay(200);
-    auto_mutex.take();
-    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-    auto_mutex.give();
-    pros::delay(320);
-    
-    move_time(FORWARD, 300, &auto_control);
-    turn_time(BACKWARD, 380, &auto_control);
-    pros::delay(1000);
-    move_time(BACKWARD, 560, &auto_control);
-    
-    auto_mutex.take();
-    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-    auto_mutex.give();
-    
-    pros::delay(500);
 
-    auto_mutex.take();
-    auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-    auto_mutex.give();
-    pros::delay(300);
-    move_time(FORWARD, 300, &auto_control);
-    turn_time(FORWARD, 180, &auto_control);
-    pros::delay(1000);
-    move_time(BACKWARD, 100, &auto_control);
+    // std::int32_t now_1 = pros::millis();
+    // horizontal_time(FORWARD, 1310, &auto_control);
+    // move_time(BACKWARD, 105, &auto_control);
+    // pros::Mutex auto_mutex;
+    // auto_mutex.take();
+    // {
+    //     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+    // }
+    // auto_mutex.give();
+    // pros::delay(200);
+    // auto_mutex.take();
+    // auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    // auto_mutex.give();
+    // pros::delay(320);
+    
+    // move_time(FORWARD, 300, &auto_control);
+    // turn_time(BACKWARD, 380, &auto_control);
+    // pros::delay(1000);
+    // move_time(BACKWARD, 560, &auto_control);
+    
+    // auto_mutex.take();
+    // auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    // auto_mutex.give();
+    
+    // pros::delay(500);
 
-    while (true) {
-        std::int32_t now_2 = pros::millis();
-        if (now_2 - now_1 >= 50*1000) {
-            auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-            pros::delay(1500);
-            auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-        }
+    // auto_mutex.take();
+    // auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    // auto_mutex.give();
+    // pros::delay(300);
+    // move_time(FORWARD, 300, &auto_control);
+    // turn_time(FORWARD, 180, &auto_control);
+    // pros::delay(1000);
+    // move_time(BACKWARD, 100, &auto_control);
+
+    // while (true) {
+    //     std::int32_t now_2 = pros::millis();
+    //     if (now_2 - now_1 >= 50*1000) {
+    //         auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    //         pros::delay(1500);
+    //         auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    //     }
         
+    // }
+    
+    
+}
+
+
+void rotate_roller(std::int32_t time , auto_control_t* rotate)
+{
+    pros::Mutex rotate_mutex;
+    rotate_mutex.take();
+    {
+        rotate->functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
     }
-    
-    
+    rotate_mutex.give();
+    pros::delay(time);
+    rotate_mutex.take();
+    {
+        rotate->functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    }
+    rotate_mutex.give();
 }
 /**
  * @brief           kick out 3 plates
@@ -366,3 +443,7 @@ void horizontal_time(double direction, double time, auto_control_t* move)
     }
     turn_mutex.give();
 }
+
+
+
+

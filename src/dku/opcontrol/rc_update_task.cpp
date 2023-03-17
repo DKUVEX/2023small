@@ -74,7 +74,7 @@ void rc_update_task_fn(void* param)
                                         -controller_update.update_RC->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);        
         }
         chassis_mutex.give();
-        pros::Mutex fucntional_mutex;
+        pros::Mutex fucntional_mutex;           
         fucntional_mutex.take();
         {
             //TODO:can be improved

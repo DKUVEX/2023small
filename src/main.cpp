@@ -85,20 +85,20 @@ void autonomous() {
     pros::Task::delay(2000);
     auto_init(&auto_control);
 
-    move_front_relative(0.05, &auto_control);
+    move_front_relative(0.005, &auto_control);
     rotate_roller(2000, &auto_control);
-    pros::Task::delay(5000);
-    turn_left_relative(360, &auto_control);
-    move_front_relative(0.7, &auto_control);
+    // pros::Task::delay(5);
+    turn_left_relative(175, &auto_control);
+    move_front_relative(0.07, &auto_control);
     turn_right_relative(5,&auto_control);
     kick_out(&auto_control);
-    move_horizontal_right_relative(0.7, &auto_control);
+    move_horizontal_right_relative(-0.07, &auto_control);
     turn_right_relative(180, &auto_control);
     turn_right_relative(40,&auto_control);
-    move_front_relative(0.7,&auto_control);
-    move_horizontal_left_relative(0.5,&auto_control);
+    move_front_relative(0.07,&auto_control);
+    move_horizontal_left_relative(0.05,&auto_control);
     turn_right_relative(180, &auto_control);
-    move_front_relative(0.7,&auto_control);
+    move_front_relative(0.07,&auto_control);
     turn_left_relative(180,&auto_control);
     kick_out(&auto_control);
 

@@ -331,7 +331,7 @@ void move_back_relative(double target_distance, auto_control_t* move)
     pros::Mutex turn_mutex;
     std::int32_t analog_left_y = 70;
     std::uint32_t now_2 = pros::millis();
-    while (x < target_distance) {
+    while (-x < target_distance) {
         turn_mutex.take();
         {
             move->chassis_voltage[0] = -analog_left_y;

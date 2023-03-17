@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 // pros::Task auto_task (auto_task_fn, NULL, TASK_PRIORITY_DEFAULT,
 //         TASK_STACK_DEPTH_DEFAULT, "auto_task");
 // pros::Task rc_update_task (rc_update_task_fn, NULL, TASK_PRIORITY_MAX,
@@ -86,13 +85,12 @@ void autonomous() {
     pros::Task::delay(2000);
     auto_init(&auto_control);
 
-    // turn_relative(90, &auto_control);
-    // move_horizontal_right_relative(0.05, &auto_control);// 0.2//move left
-    //     pros::Task::delay(1000);
+    move_horizontal_right_relative(0.05, &auto_control);// 0.2//move left
+        pros::Task::delay(1000);
     move_back_relative(0.05,&auto_control);
         pros::Task::delay(1000);
-    // turn_right_relative(120, &auto_control);
-    //     pros::Task::delay(1000);
+    turn_right_relative(120, &auto_control);
+        pros::Task::delay(1000);
     // rotate_roller(180, &auto_control);
     // turn_relative(-120, 3&auto_control);
     // move_relative(-0.2, &auto_control);

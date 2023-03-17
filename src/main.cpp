@@ -1,5 +1,11 @@
 #include "main.h"
 
+
+// pros::Task auto_task (auto_task_fn, NULL, TASK_PRIORITY_DEFAULT,
+//         TASK_STACK_DEPTH_DEFAULT, "auto_task");
+// pros::Task rc_update_task (rc_update_task_fn, NULL, TASK_PRIORITY_MAX,
+//         TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
+
 /**
  * A callback function for LLEMU's center button.
  *
@@ -34,7 +40,13 @@ void initialize() {
                 TASK_STACK_DEPTH_DEFAULT, "chassis_task");
     pros::Task functional_task (functional_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
                 TASK_STACK_DEPTH_DEFAULT, "functional_task");
-
+    // pros::Task auto_task (auto_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
+    //             TASK_STACK_DEPTH_DEFAULT, "auto_task");
+    // pros::Task rc_update_task (rc_update_task_fn, (void*)"PROS", TASK_PRIORITY_MAX,
+    //             TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
+    // auto_task.suspend();
+    // rc_update_task.suspend();
+    //pros::Task tracking (tracking_1_fn,  (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tracking");
 
 }
 
@@ -68,8 +80,43 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-    pros::Task auto_task (auto_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
-            TASK_STACK_DEPTH_DEFAULT, "auto_task");
+
+    std::cout << "auto task runs" << std::endl;
+
+    pros::Task::delay(2000);
+    auto_init(&auto_control);
+
+    // turn_relative(90, &auto_control);
+    // move_horizontal_right_relative(0.05, &auto_control);// 0.2//move left
+    //     pros::Task::delay(1000);
+    move_back_relative(0.05,&auto_control);
+        pros::Task::delay(1000);
+    // turn_right_relative(120, &auto_control);
+    //     pros::Task::delay(1000);
+    // rotate_roller(180, &auto_control);
+    // turn_relative(-120, 3&auto_control);
+    // move_relative(-0.2, &auto_control);
+    // move_relative(-0.2, &auto_control);
+    // turn_relative(90, &auto_control);
+    // move_relative(0.5, &auto_control);
+    // turn_relative(90, &auto_control);
+
+    
+    // kick_out(&auto_control);
+
+    
+    // pros:: Task this_task = pros::Task::current();
+    // this_task.remove();
+
+    // if (rc_update_task.get_state() != pros::E_TASK_STATE_SUSPENDED)
+    // {
+    //     rc_update_task.suspend();
+    // }
+
+
+    // pros::Task auto_task (auto_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
+    //         TASK_STACK_DEPTH_DEFAULT, "auto_task");
+    // auto_task.resume();
 }
 
 /**
@@ -89,8 +136,14 @@ void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	pros::Motor left_mtr(1);
 	pros::Motor right_mtr(2);
+
     pros::Task rc_update_task (rc_update_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
                 TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
+    // if (auto_task.get_state() != pros::E_TASK_STATE_SUSPENDED)
+    // {
+    //     auto_task.suspend();
+    // }
+    // rc_update_task.resume();
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,

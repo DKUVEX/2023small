@@ -80,14 +80,16 @@ void competition_initialize() {}
  */
 void autonomous() {
 
-    std::cout << "auto task runs" << std::endl;
+   std::cout << "auto task runs" << std::endl;
 
     pros::Task::delay(2000);
     auto_init(&auto_control);
 
     int delayTime=500;
 
-    move_horizontal_right_relative(2, &auto_control);// 0.2//move left
+    kick_out(&auto_control);
+
+ /*   move_horizontal_right_relative(4, &auto_control);// 0.2//move left
         pros::Task::delay(delayTime);
     move_back_relative(0.08,&auto_control);
         pros::Task::delay(delayTime);
@@ -112,29 +114,17 @@ void autonomous() {
     turn_left_relative(60, &auto_control);
         pros::Task::delay(delayTime);
     move_front_speed_relative(0.5,&auto_control,30);
-        pros::Task::delay(delayTime); 
-    // rotate_roller(180, &auto_control);
-    // turn_relative(-120, 3&auto_control);
-    // move_relative(-0.2, &auto_control);
-    // move_relative(-0.2, &auto_control);
-    // turn_relative(90, &auto_control);
-    // move_relative(0.5, &auto_control);
-    // turn_relative(90, &auto_control);
+        pros::Task::delay(delayTime); */ 
 
-    
-    // kick_out(&auto_control);
-// turn_left_relative(120, &auto_control);
-//         pros::Task::delay(delayTime);
-    
+
+
+
     // pros:: Task this_task = pros::Task::current();
     // this_task.remove();
-
     // if (rc_update_task.get_state() != pros::E_TASK_STATE_SUSPENDED)
     // {
     //     rc_update_task.suspend();
     // }
-
-
     // pros::Task auto_task (auto_task_fn, (void*)"PROS", TASK_PRIORITY_DEFAULT,
     //         TASK_STACK_DEPTH_DEFAULT, "auto_task");
     // auto_task.resume();

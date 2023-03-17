@@ -483,67 +483,7 @@ void move_horizontal_left_relative(double target_distance, auto_control_t* move)
   */
 void auto_task_fn(void* param)
 {
-    // std::cout << "auto task runs" << std::endl;
 
-    // pros::Task::delay(AUTO_TASK_INIT_TIME);
-    // auto_init(&auto_control);
-
-    // // turn_relative(90, &auto_control);
-    // move_relative(0.5, &auto_control);
-    // // turn_relative(90, &auto_control);
-
-    // rotate_roller(300, &auto_control);
-    // // kick_out(&auto_control);
-
-    
-    // pros:: Task this_task = pros::Task::current();
-    // this_task.remove();
-    
-    // turn_to(0,0,&auto_control);
-    // std::uint32_t now_a = pros::millis();
-    // // std::uint32_t now = pros::millis();
-    // // while (true) {
-    // //     pros::Task::delay_until(&now, AUTO_TASK_TIME_MS);
-    // // }
-    // move_time(FORWARD, 350, &auto_control);
-    // pros::delay(1000);
-    // pros::Mutex auto_mutes;
-    // auto_mutes.take();
-    //     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-    // auto_mutes.give();
-    // pros::delay(220);
-    // auto_mutes.take();
-    //     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-    // auto_mutes.give();
-    // pros::delay(1000);
-    // move_time(BACKWARD, 200, &auto_control);
-    // pros::delay(500);
-    // turn_time(FORWARD, 340, &auto_control);
-    // pros::delay(500);
-    // move_time(FORWARD, 1100, &auto_control);
-    // pros::delay(1000);
-
-    // auto_mutes.take();
-    //     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-    // auto_mutes.give();
-    // pros::delay(200);
-    // auto_mutes.take();
-    //     auto_control.functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-    // auto_mutes.give();
-
-    // move_time(BACKWARD, 600, &auto_control);
-    // turn_time(BACKWARD, 290, &auto_control);
-
-    // // auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
-    // while (true) {
-    //     std::uint32_t now_time_b = pros::millis();
-    //     if ((now_time_b - now_a)>50*1000) {
-    //         auto_mutes.take();
-    //             auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
-    //         auto_mutes.give();
-    //     }
-    // }
-    
 }
 /**
  * @brief           kick out 3 plates
@@ -558,10 +498,21 @@ void kick_out(auto_control_t* kick)
         kick->functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
     }
     kick_mutex.give();
-    pros::delay(2500);
     kick_mutex.take();
     {
-        kick->functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+        kick->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    }
+    kick_mutex.give();
+    pros::delay(2000);
+    kick_mutex.take();
+    {
+        kick->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    }
+    kick_mutex.give();
+    pros::delay(2000);
+    kick_mutex.take();
+    {
+        kick->functional_status->index_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
     }
     kick_mutex.give();
     pros::delay(5000);
@@ -573,6 +524,11 @@ void kick_out(auto_control_t* kick)
     kick_mutex.take();
     {
         kick->functional_status->flywheel = E_FLYWHEEL_STATUS_OFF;
+    }
+    kick_mutex.give();
+    kick_mutex.take();
+    {
+        kick->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
     }
     kick_mutex.give();
 }

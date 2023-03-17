@@ -95,7 +95,7 @@ void turn_to(double target_x, double target_y, auto_control_t* turn);
  * @param[in,out]   turn: find current position,give chassis voltage
  * @retval          null
  */
-void turn_relative(double target_angle, auto_control_t* turn);
+void turn_right_relative(double target_angle, auto_control_t* turn);
 
 /**
  * @brief           let robot turn to specific point
@@ -130,7 +130,9 @@ void move_time(double direction, double time, auto_control_t* move);
  * @param[in,out]   move: find current position,give chassis voltage
  * @retval          null
  */
-void move_relative(double target_distance, auto_control_t* move);
+void move_front_relative(double target_distance, auto_control_t* move);
+
+void move_back_relative(double target_distance, auto_control_t* move);
 
 /**
  * @brief           kick out 3 plates
@@ -155,5 +157,11 @@ void rotate_roller(std::int32_t time , auto_control_t* rotate);
  * @retval          null
  */
 
+void move_horizontal_right_relative(double target_distance, auto_control_t* move);
+
+void move_horizontal_left_relative(double target_distance, auto_control_t* move);
+
+
+void turn_left_relative(double target_angle, auto_control_t* turn);
 
 #endif

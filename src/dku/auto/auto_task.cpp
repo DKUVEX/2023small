@@ -108,7 +108,7 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
  * @param[in,out]   turn: find current position,give chassis voltage
  * @retval          null
  */
-void turn_relative(double target_angle, auto_control_t* turn)
+void turn_right_relative(double target_angle, auto_control_t* turn)
 {
     printf("turning");
     double angle = 0;
@@ -143,6 +143,40 @@ void turn_relative(double target_angle, auto_control_t* turn)
     turn_mutex.give();
 }
 
+void turn_left_relative(double target_angle, auto_control_t* turn)
+{
+    printf("turning");
+    double angle = 0;
+    std::int32_t analog_right_x = 0; //simulate the joystick
+    analog_right_x = 30;
+    pros::Mutex turn_mutex;
+    double yaw_gyro = 0;
+    std::uint32_t now_0 = pros::millis();
+    while (-angle < target_angle) {
+        turn_mutex.take();
+        {
+            turn->chassis_voltage[0] = -analog_right_x;
+            turn->chassis_voltage[1] = -analog_right_x;
+            turn->chassis_voltage[2] = analog_right_x;
+            turn->chassis_voltage[3] = analog_right_x;
+        }
+        turn_mutex.give();
+        yaw_gyro = turn->sensor_data->gps_front_data.gps_gyro.z;
+        angle += yaw_gyro * (AUTO_TASK_TIME_MS/1000.0);
+        
+        printf("angle %lf\n", angle);
+        pros::lcd::print(2, "angle: %lf\n", angle);
+        pros::Task::delay_until(&now_0, AUTO_TASK_TIME_MS);
+    }
+    turn_mutex.take();
+    {
+        turn->chassis_voltage[0] = 0;
+        turn->chassis_voltage[1] = 0;
+        turn->chassis_voltage[2] = 0;
+        turn->chassis_voltage[3] = 0;
+    }
+    turn_mutex.give();
+}
 /**
  * @brief           let robot turn to specific point
  * @param[in]       direction: direction, -1 or +1
@@ -244,13 +278,15 @@ void move_time(double direction, double time, auto_control_t* move)
     turn_mutex.give();
 }
 
+
+
 /**
  * @brief           move a relative distance, unit is meter
  * @param[in]       target_distance: aimed distance
  * @param[in,out]   move: find current position,give chassis voltage
  * @retval          null
  */
-void move_relative(double target_distance, auto_control_t* move)
+void move_front_relative(double target_distance, auto_control_t* move)
 {
     double v0 = 0;
     double vt = 0;
@@ -266,6 +302,116 @@ void move_relative(double target_distance, auto_control_t* move)
             move->chassis_voltage[1] = analog_left_y;
             move->chassis_voltage[2] = analog_left_y;
             move->chassis_voltage[3] = analog_left_y;
+        }
+        turn_mutex.give();
+        a = -move->sensor_data->gps_front_data.gps_acc.y;
+        v0 = vt;
+        vt = v0 + a*(AUTO_TASK_TIME_MS/100.0);
+        x += v0*(AUTO_TASK_TIME_MS/100.0) + 0.5*a*(AUTO_TASK_TIME_MS/100.0)*(AUTO_TASK_TIME_MS/100.0);
+        printf("distance %lf", x);
+        pros::lcd::print(1, "distance: %lf", x);
+        pros::lcd::print(2, "acc: %lf", move->sensor_data->gps_front_data.gps_acc.y);
+        pros::Task::delay_until(&now_2, AUTO_TASK_TIME_MS);
+    }
+    turn_mutex.take();
+    {
+        move->chassis_voltage[0] = 0;
+        move->chassis_voltage[1] = 0;
+        move->chassis_voltage[2] = 0;
+        move->chassis_voltage[3] = 0;
+    }
+    turn_mutex.give();
+}
+void move_back_relative(double target_distance, auto_control_t* move)
+{
+    double v0 = 0;
+    double vt = 0;
+    double x = 0;
+    double a = 0;
+    pros::Mutex turn_mutex;
+    std::int32_t analog_left_y = 70;
+    std::uint32_t now_2 = pros::millis();
+    while (-x < target_distance) {
+        turn_mutex.take();
+        {
+            move->chassis_voltage[0] = -analog_left_y;
+            move->chassis_voltage[1] = -analog_left_y;
+            move->chassis_voltage[2] = -analog_left_y;
+            move->chassis_voltage[3] = -analog_left_y;
+        }
+        turn_mutex.give();
+        a = -move->sensor_data->gps_front_data.gps_acc.y;
+        v0 = vt;
+        vt = v0 + a*(AUTO_TASK_TIME_MS/100.0);
+        x += v0*(AUTO_TASK_TIME_MS/100.0) + 0.5*a*(AUTO_TASK_TIME_MS/100.0)*(AUTO_TASK_TIME_MS/100.0);
+        printf("distance %lf", x);
+        pros::lcd::print(1, "distance: %lf", x);
+        pros::lcd::print(2, "acc: %lf", move->sensor_data->gps_front_data.gps_acc.y);
+        pros::Task::delay_until(&now_2, AUTO_TASK_TIME_MS);
+    }
+    turn_mutex.take();
+    {
+        move->chassis_voltage[0] = 0;
+        move->chassis_voltage[1] = 0;
+        move->chassis_voltage[2] = 0;
+        move->chassis_voltage[3] = 0;
+    }
+    turn_mutex.give();
+}
+
+void move_horizontal_right_relative(double target_distance, auto_control_t* move)
+{
+    double v0 = 0;
+    double vt = 0;
+    double x = 0;
+    double a = 0;
+    pros::Mutex turn_mutex;
+    std::int32_t analog_left_y = 70;
+    std::uint32_t now_2 = pros::millis();
+    while (x < target_distance) {
+        turn_mutex.take();
+        {
+            move->chassis_voltage[0] = analog_left_y;
+            move->chassis_voltage[1] = -analog_left_y;
+            move->chassis_voltage[2] = -analog_left_y;
+            move->chassis_voltage[3] = analog_left_y;
+        }
+        turn_mutex.give();
+        a = -move->sensor_data->gps_front_data.gps_acc.y;
+        v0 = vt;
+        vt = v0 + a*(AUTO_TASK_TIME_MS/100.0);
+        x += v0*(AUTO_TASK_TIME_MS/100.0) + 0.5*a*(AUTO_TASK_TIME_MS/100.0)*(AUTO_TASK_TIME_MS/100.0);
+        printf("distance %lf", x);
+        pros::lcd::print(1, "distance: %lf", x);
+        pros::lcd::print(2, "acc: %lf", move->sensor_data->gps_front_data.gps_acc.y);
+        pros::Task::delay_until(&now_2, AUTO_TASK_TIME_MS);
+    }
+    turn_mutex.take();
+    {
+        move->chassis_voltage[0] = 0;
+        move->chassis_voltage[1] = 0;
+        move->chassis_voltage[2] = 0;
+        move->chassis_voltage[3] = 0;
+    }
+    turn_mutex.give();
+}
+
+void move_horizontal_left_relative(double target_distance, auto_control_t* move)
+{
+    double v0 = 0;
+    double vt = 0;
+    double x = 0;
+    double a = 0;
+    pros::Mutex turn_mutex;
+    std::int32_t analog_left_y = 70;
+    std::uint32_t now_2 = pros::millis();
+    while (x < target_distance) {
+        turn_mutex.take();
+        {
+            move->chassis_voltage[0] = -analog_left_y;
+            move->chassis_voltage[1] = analog_left_y;
+            move->chassis_voltage[2] = analog_left_y;
+            move->chassis_voltage[3] = -analog_left_y;
         }
         turn_mutex.give();
         a = -move->sensor_data->gps_front_data.gps_acc.y;

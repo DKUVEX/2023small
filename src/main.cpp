@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 // pros::Task auto_task (auto_task_fn, NULL, TASK_PRIORITY_DEFAULT,
 //         TASK_STACK_DEPTH_DEFAULT, "auto_task");
 // pros::Task rc_update_task (rc_update_task_fn, NULL, TASK_PRIORITY_MAX,
@@ -46,7 +45,7 @@ void initialize() {
     //             TASK_STACK_DEPTH_DEFAULT, "rc_update_task");
     // auto_task.suspend();
     // rc_update_task.suspend();
-    pros::Task tracking (tracking_1_fn,  (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tracking");
+    //pros::Task tracking (tracking_1_fn,  (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tracking");
 
 }
 
@@ -83,18 +82,38 @@ void autonomous() {
 
     std::cout << "auto task runs" << std::endl;
 
-    pros::Task::delay(AUTO_TASK_INIT_TIME);
+    pros::Task::delay(2000);
     auto_init(&auto_control);
 
+    move_front_relative(0.05, &auto_control);
+    rotate_roller(2000, &auto_control);
+    pros::Task::delay(5000);
+    turn_left_relative(360, &auto_control);
+    move_front_relative(0.7, &auto_control);
+    turn_right_relative(5,&auto_control);
+    kick_out(&auto_control);
+    move_horizontal_right_relative(0.7, &auto_control);
+    turn_right_relative(180, &auto_control);
+    turn_right_relative(40,&auto_control);
+    move_front_relative(0.7,&auto_control);
+    move_horizontal_left_relative(0.5,&auto_control);
+    turn_right_relative(180, &auto_control);
+    move_front_relative(0.7,&auto_control);
+    turn_left_relative(180,&auto_control);
+    kick_out(&auto_control);
+
+    //     pros::Task::delay(1000);
+    // move_back_relative(0.05,&auto_control);
+    //     pros::Task::delay(1000);
+    // turn_left_relative(120, &auto_control);
+    //     pros::Task::delay(1000);
+    // rotate_roller(180, &auto_control);
+    // turn_relative(-120, 3&auto_control);
+    // move_relative(-0.2, &auto_control);
+    // move_relative(-0.2, &auto_control);
     // turn_relative(90, &auto_control);
-    move_relative(0.05, &auto_control);
-    rotate_roller(180, &auto_control);
-    turn_relative(-120, &auto_control);
-    move_relative(-0.2, &auto_control);
-    move_relative(-0.2, &auto_control);
-    turn_relative(90, &auto_control);
-    move_relative(0.5, &auto_control);
-    turn_relative(90, &auto_control);
+    // move_relative(0.5, &auto_control);
+    // turn_relative(90, &auto_control);
 
     
     // kick_out(&auto_control);

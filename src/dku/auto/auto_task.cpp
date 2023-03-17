@@ -533,6 +533,7 @@ void kick_out(auto_control_t* kick)
     kick_mutex.give();
 }
 
+
 /**
  * @brief           rotate the roller
  * @param[in]       time: the rotate time, unit: ms

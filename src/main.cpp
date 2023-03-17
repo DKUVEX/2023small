@@ -79,15 +79,44 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-
-   std::cout << "auto task runs" << std::endl;
-
+    int delayTime=1000;
+    std::uint32_t now_time;
+    std::uint32_t init_time;
+    init_time = pros::millis();               
+    std::cout << "auto task runs" << std::endl;
     pros::Task::delay(2000);
     auto_init(&auto_control);
 
-    int delayTime=500;
+    move_horizontal_right_relative(2, &auto_control);// 0.2//move left
+        pros::Task::delay(delayTime);
+   move_back_relative(0.08,&auto_control);
+        pros::Task::delay(delayTime);
+    rotate_roller(90, &auto_control);
+        pros::Task::delay(delayTime);
+    move_front_relative(0.4,&auto_control);
+        pros::Task::delay(delayTime);
+    turn_left_relative(90, &auto_control);
+        pros::Task::delay(delayTime);
+        
+    move_back_relative(0.4,&auto_control);
+        pros::Task::delay(delayTime);
+    rotate_roller(90, &auto_control);
+        pros::Task::delay(delayTime);
+    move_front_relative(0.4,&auto_control);
+        pros::Task::delay(delayTime);
 
-    kick_out(&auto_control);
+    turn_right_relative(45, &auto_control);
+        pros::Task::delay(delayTime); 
+
+        
+        
+    while(true){
+        now_time = pros::millis();
+        if ((init_time - now_time)>50*1000) {
+            auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+            break;
+        }
+    }
 
  /*   move_horizontal_right_relative(4, &auto_control);// 0.2//move left
         pros::Task::delay(delayTime);

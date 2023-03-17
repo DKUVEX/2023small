@@ -87,9 +87,9 @@ void autonomous() {
 
     int delayTime=500;
 
-    move_horizontal_right_relative(0.45, &auto_control);// 0.2//move left
+    move_horizontal_right_relative(2, &auto_control);// 0.2//move left
         pros::Task::delay(delayTime);
-    move_back_relative(0.10,&auto_control);
+    move_back_relative(0.08,&auto_control);
         pros::Task::delay(delayTime);
     rotate_roller(90, &auto_control);
         pros::Task::delay(delayTime);
@@ -98,11 +98,12 @@ void autonomous() {
     // move_horizontal_right_relative(0.05, &auto_control);
     //     pros::Task::delay(delayTime);
     
+
     move_front_relative(0.43,&auto_control);
         pros::Task::delay(delayTime);
     move_front_relative(0.05,&auto_control);
         pros::Task::delay(delayTime);
-    turn_right_relative(60, &auto_control);
+    turn_right_relative(40, &auto_control);
         pros::Task::delay(delayTime); 
     kick_out(&auto_control);     
         pros::Task::delay(delayTime);

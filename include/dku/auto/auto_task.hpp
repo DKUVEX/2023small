@@ -161,6 +161,7 @@ void move_horizontal_right_relative(double target_distance, auto_control_t* move
 
 void move_horizontal_left_relative(double target_distance, auto_control_t* move);
 
+void move_front_speed_relative(double target_distance, auto_control_t* move, std::int32_t analog_left_y);
 
 void turn_left_relative(double target_angle, auto_control_t* turn);
 

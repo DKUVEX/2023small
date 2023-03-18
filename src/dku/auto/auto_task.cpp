@@ -22,6 +22,8 @@
 #include <cstdint>
 #include <Math.h>
 
+#define spd 60
+
 auto_control_t auto_control;
 void auto_init(auto_control_t* init)
 {
@@ -71,7 +73,7 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
     std::uint32_t now_1 = pros::millis();
     while (angle_difference>=3) {
 
-        analog_right_x = 30;
+        analog_right_x = spd;
         turn_mutex.take();
         {
             turn->chassis_voltage[0] = analog_right_x;
@@ -114,7 +116,7 @@ void turn_right_relative(double target_angle, auto_control_t* turn)
     printf("turning");
     double angle = 0;
     std::int32_t analog_right_x = 0; //simulate the joystick
-    analog_right_x = 30;
+    analog_right_x = spd;
     pros::Mutex turn_mutex;
     double yaw_gyro = 0;
     std::uint32_t now_0 = pros::millis();
@@ -149,7 +151,7 @@ void turn_left_relative(double target_angle, auto_control_t* turn)
     printf("turning");
     double angle = 0;
     std::int32_t analog_right_x = 0; //simulate the joystick
-    analog_right_x = 30;
+    analog_right_x = spd;
     pros::Mutex turn_mutex;
     double yaw_gyro = 0;
     std::uint32_t now_0 = pros::millis();
@@ -257,7 +259,7 @@ void move_to(double target_x, double target_y, auto_control_t* move)
  */
 void move_time(double direction, double time, auto_control_t* move)
 {
-    std::int32_t analog_left_y = 70;
+    std::int32_t analog_left_y = spd;
     pros::Mutex turn_mutex;
     turn_mutex.take();
     {
@@ -294,7 +296,7 @@ void move_front_relative(double target_distance, auto_control_t* move)
     double x = 0;
     double a = 0;
     pros::Mutex turn_mutex;
-    std::int32_t analog_left_y = 70;
+    std::int32_t analog_left_y = spd;
     std::uint32_t now_2 = pros::millis();
     while (x < target_distance) {
         turn_mutex.take();
@@ -367,7 +369,7 @@ void move_back_relative(double target_distance, auto_control_t* move)
     double x = 0;
     double a = 0;
     pros::Mutex turn_mutex;
-    std::int32_t analog_left_y = 70;
+    std::int32_t analog_left_y = spd;
     std::uint32_t now_2 = pros::millis();
     while (abs(x) < target_distance) {
         turn_mutex.take();
@@ -404,7 +406,7 @@ void move_horizontal_right_relative(double target_distance, auto_control_t* move
     double x = 0;
     double a = 0;
     pros::Mutex turn_mutex;
-    std::int32_t analog_left_y = 70;
+    std::int32_t analog_left_y = spd;
     std::uint32_t now_2 = pros::millis();
     while (abs(x) < target_distance) {
         turn_mutex.take();
@@ -441,7 +443,7 @@ void move_horizontal_left_relative(double target_distance, auto_control_t* move)
     double x = 0;
     double a = 0;
     pros::Mutex turn_mutex;
-    std::int32_t analog_left_y = 70;
+    std::int32_t analog_left_y = spd;
     std::uint32_t now_2 = pros::millis();
     while (abs(x) < target_distance) {
         turn_mutex.take();

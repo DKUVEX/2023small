@@ -22,7 +22,6 @@
 #include <cstdint>
 #include <Math.h>
 
-#define spd 60
 
 auto_control_t auto_control;
 void auto_init(auto_control_t* init)
@@ -36,7 +35,7 @@ void auto_init(auto_control_t* init)
     {
         // printf("here2");
         init->functional_status->flywheel = E_FLYWHEEL_STATUS_OFF;
-        init->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_FORWARD;
+        init->functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
         // init->functional_status->roller_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
     }
     init_mutex.give();
@@ -73,7 +72,7 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
     std::uint32_t now_1 = pros::millis();
     while (angle_difference>=3) {
 
-        analog_right_x = spd;
+        analog_right_x = CHASSIS_MOVE_SPEED;
         turn_mutex.take();
         {
             turn->chassis_voltage[0] = analog_right_x;
@@ -111,29 +110,34 @@ void turn_to(double target_x, double target_y, auto_control_t* turn)
  * @param[in,out]   turn: find current position,give chassis voltage
  * @retval          null
  */
-void turn_right_relative(double target_angle, auto_control_t* turn)
+// TODO: use enum state value to handle the move and rotate state, ro achieve
+// high level movement(along the circle/or...)
+void turn_relative(double target_angle, auto_control_t* turn)
 {
-    printf("turning");
+    std::int32_t direction_flag = -1;
+    if (target_angle > 0 ) {
+        direction_flag = 1; //turn right TODO: use enum
+    }
     double angle = 0;
     std::int32_t analog_right_x = 0; //simulate the joystick
-    analog_right_x = spd;
+    analog_right_x = CHASSIS_MOVE_SPEED;
     pros::Mutex turn_mutex;
     double yaw_gyro = 0;
     std::uint32_t now_0 = pros::millis();
-    while (angle < target_angle) {
+    printf("angle %lf, target: %lf\n", angle, target_angle);
+    while (angle < target_angle*direction_flag) {
         turn_mutex.take();
         {
-            turn->chassis_voltage[0] = analog_right_x;
-            turn->chassis_voltage[1] = analog_right_x;
-            turn->chassis_voltage[2] = -analog_right_x;
-            turn->chassis_voltage[3] = -analog_right_x;
+            turn->chassis_voltage[0] = analog_right_x*direction_flag;
+            turn->chassis_voltage[1] = analog_right_x*direction_flag;
+            turn->chassis_voltage[2] = -analog_right_x*direction_flag;
+            turn->chassis_voltage[3] = -analog_right_x*direction_flag;
         }
         turn_mutex.give();
         yaw_gyro = turn->sensor_data->gps_front_data.gps_gyro.z;
-        angle += yaw_gyro * (AUTO_TASK_TIME_MS/1000.0);
-        
+        angle += yaw_gyro * (AUTO_TASK_TIME_MS/1000.0) * (double)direction_flag;
         printf("angle %lf\n", angle);
-        pros::lcd::print(2, "angle: %lf\n", angle);
+        // pros::lcd::print(2, "angle: %lf\n", angle);
         pros::Task::delay_until(&now_0, AUTO_TASK_TIME_MS);
     }
     turn_mutex.take();
@@ -151,7 +155,7 @@ void turn_left_relative(double target_angle, auto_control_t* turn)
     printf("turning");
     double angle = 0;
     std::int32_t analog_right_x = 0; //simulate the joystick
-    analog_right_x = spd;
+    analog_right_x = CHASSIS_MOVE_SPEED;
     pros::Mutex turn_mutex;
     double yaw_gyro = 0;
     std::uint32_t now_0 = pros::millis();
@@ -259,7 +263,7 @@ void move_to(double target_x, double target_y, auto_control_t* move)
  */
 void move_time(double direction, double time, auto_control_t* move)
 {
-    std::int32_t analog_left_y = spd;
+    std::int32_t analog_left_y = CHASSIS_MOVE_SPEED;
     pros::Mutex turn_mutex;
     turn_mutex.take();
     {
@@ -296,7 +300,7 @@ void move_front_relative(double target_distance, auto_control_t* move)
     double x = 0;
     double a = 0;
     pros::Mutex turn_mutex;
-    std::int32_t analog_left_y = spd;
+    std::int32_t analog_left_y = CHASSIS_MOVE_SPEED;
     std::uint32_t now_2 = pros::millis();
     while (x < target_distance) {
         turn_mutex.take();
@@ -369,7 +373,7 @@ void move_back_relative(double target_distance, auto_control_t* move)
     double x = 0;
     double a = 0;
     pros::Mutex turn_mutex;
-    std::int32_t analog_left_y = spd;
+    std::int32_t analog_left_y = CHASSIS_MOVE_SPEED;
     std::uint32_t now_2 = pros::millis();
     while (abs(x) < target_distance) {
         turn_mutex.take();
@@ -406,7 +410,7 @@ void move_horizontal_right_relative(double target_distance, auto_control_t* move
     double x = 0;
     double a = 0;
     pros::Mutex turn_mutex;
-    std::int32_t analog_left_y = spd;
+    std::int32_t analog_left_y = CHASSIS_MOVE_SPEED;
     std::uint32_t now_2 = pros::millis();
     while (abs(x) < target_distance) {
         turn_mutex.take();
@@ -443,7 +447,7 @@ void move_horizontal_left_relative(double target_distance, auto_control_t* move)
     double x = 0;
     double a = 0;
     pros::Mutex turn_mutex;
-    std::int32_t analog_left_y = spd;
+    std::int32_t analog_left_y = CHASSIS_MOVE_SPEED;
     std::uint32_t now_2 = pros::millis();
     while (abs(x) < target_distance) {
         turn_mutex.take();

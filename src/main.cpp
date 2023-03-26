@@ -79,51 +79,61 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+
     int delayTime=1000;
-    std::uint32_t now_time;
-    std::uint32_t init_time;
-    init_time = pros::millis();               
     std::cout << "auto task runs" << std::endl;
     pros::Task::delay(1000);
     auto_init(&auto_control);
-    auto_control.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-    pros::Task::delay(2000);
-    move_horizontal_right_relative(3, &auto_control);// 0.2//move left
-        pros::Task::delay(delayTime);
-    move_back_relative(0.08,&auto_control);
-        pros::Task::delay(delayTime);
-    rotate_roller(240, &auto_control);
-        pros::Task::delay(delayTime);
-    move_front_relative(3.8,&auto_control);//1.3
-        pros::Task::delay(delayTime);
-    turn_left_relative(90, &auto_control);
-        pros::Task::delay(delayTime);
+    
+    // auto_control.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+
+    turn_relative(-90, &auto_control);
+    // turn_relative(90, &auto_control);
+
+    // turn_relative(-90, &auto_control);
+
+    // std::uint32_t now_time;
+    // std::uint32_t init_time;
+    // init_time = pros::millis();               
+
+    // auto_control.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    // pros::Task::delay(2000);
+    // move_horizontal_right_relative(3, &auto_control);// 0.2//move left
+    //     pros::Task::delay(delayTime);
+    // move_back_relative(0.08,&auto_control);
+    //     pros::Task::delay(delayTime);
+    // rotate_roller(240, &auto_control);
+    //     pros::Task::delay(delayTime);
+    // move_front_relative(3.8,&auto_control);//1.3
+    //     pros::Task::delay(delayTime);
+    // turn_left_relative(90, &auto_control);
+    //     pros::Task::delay(delayTime);
         
-    move_back_relative(3,&auto_control);//2
-        pros::Task::delay(delayTime);
-    rotate_roller(240, &auto_control);
-        pros::Task::delay(delayTime);
-    move_front_relative(3.2,&auto_control);
-        pros::Task::delay(delayTime);
+    // move_back_relative(3,&auto_control);//2
+    //     pros::Task::delay(delayTime);
+    // rotate_roller(240, &auto_control);
+    //     pros::Task::delay(delayTime);
+    // move_front_relative(3.2,&auto_control);
+    //     pros::Task::delay(delayTime);
 
-    turn_right_relative(43, &auto_control);
-        pros::Task::delay(delayTime); 
+    // turn_right_relative(43, &auto_control);
+    //     pros::Task::delay(delayTime); 
 
 
-    pros::Task::delay(35*1000);
-    pros::Mutex turn_mutex;
-    turn_mutex.take();
-    {
-    auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
-    }
-    turn_mutex.give();
-    pros::Task::delay(500);
-    turn_mutex.take();
-    {
-    auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
-    }
-    turn_mutex.give();
- 
+    // pros::Task::delay(35*1000);
+    // pros::Mutex turn_mutex;
+    // turn_mutex.take();
+    // {
+    // auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
+    // }
+    // turn_mutex.give();
+    // pros::Task::delay(500);
+    // turn_mutex.take();
+    // {
+    // auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
+    // }
+    // turn_mutex.give();
+ //old auto
 
 
 

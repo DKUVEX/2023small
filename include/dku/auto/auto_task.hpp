@@ -33,6 +33,8 @@
 #define FORWARD 1
 #define BACKWARD -1
 #define STOP 0
+#define CHASSIS_MOVE_SPEED 60
+
 typedef struct {
     double current_x;
     double current_y;
@@ -45,6 +47,19 @@ typedef struct {
     current_status_t current_pos; 
     sensor_data_t *sensor_data;
 }auto_control_t;
+
+typedef enum auto_directions_e
+{
+    E_AUTO_DIRECTION_NULL = 0,
+    E_AUTO_DIRECTION_TURN_LEFT,
+    E_AUTO_DIRECTION_TURN_RIGHT,
+    E_AUTO_DIRECTION_MOVE_FORWARD,
+    E_AUTO_DIRECTION_MOVE_BACKWARD,
+    E_AUTO_DIRECTION_MOVE_LIFT,
+    E_AUTO_DIRECTION_MOVE_RIGHT,
+
+    E_AUTO_DIRECTION_TOTAL,
+}auto_directions_e_t;
 
 extern auto_control_t auto_control;
 /**
@@ -95,7 +110,7 @@ void turn_to(double target_x, double target_y, auto_control_t* turn);
  * @param[in,out]   turn: find current position,give chassis voltage
  * @retval          null
  */
-void turn_right_relative(double target_angle, auto_control_t* turn);
+void turn_relative(double target_angle, auto_control_t* turn);
 
 /**
  * @brief           let robot turn to specific point

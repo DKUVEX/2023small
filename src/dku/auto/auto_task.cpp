@@ -266,7 +266,9 @@ void move_time(double direction, double time, auto_control_t* move)
         move->chassis_voltage[3] = analog_left_y*direction;
     }
     turn_mutex.give();
-    pros::delay(time);
+    pros::delay(time*0.8);
+    rotate_roller(300, &auto_control);
+    pros::delay(time*0.2);
     analog_left_y = 0;
     turn_mutex.take();
     {

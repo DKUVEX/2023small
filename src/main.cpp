@@ -1,5 +1,6 @@
 #include "main.h"
 
+
 // pros::Task auto_task (auto_task_fn, NULL, TASK_PRIORITY_DEFAULT,
 //         TASK_STACK_DEPTH_DEFAULT, "auto_task");
 // pros::Task rc_update_task (rc_update_task_fn, NULL, TASK_PRIORITY_MAX,
@@ -85,23 +86,55 @@ void autonomous() {
     pros::Task::delay(2000);
     auto_init(&auto_control);
 
-    move_front_relative(0.005, &auto_control);
-    rotate_roller(2000, &auto_control);
-    // pros::Task::delay(5);
-    turn_left_relative(175, &auto_control);
-    move_front_relative(0.07, &auto_control);
-    turn_right_relative(5,&auto_control);
-    kick_out(&auto_control);
-    move_horizontal_right_relative(-0.07, &auto_control);
-    turn_right_relative(180, &auto_control);
-    turn_right_relative(40,&auto_control);
-    move_front_relative(0.07,&auto_control);
-    move_horizontal_left_relative(0.05,&auto_control);
-    turn_right_relative(180, &auto_control);
-    move_front_relative(0.07,&auto_control);
-    turn_left_relative(180,&auto_control);
-    kick_out(&auto_control);
+//      while(true){
+//         int now_time = pros::millis();
+//         if ((init_time - now_time)>50*1000) {
+// //auto_control.functional_status->extension_motor = E_FUNCTIONAL_MOTOR_STATUS_BACKWARD;
 
+//         }
+//         if((init_time - now_time)>50*1000+500){
+//             auto_control.functional  _status->flywheel = E_FLYWHEEL_STATUS_OFF;
+//             break;
+//         }
+//     }
+    move_time(1,1000,&auto_control);
+    
+    // pros::Task::delay(10);
+    // rotate_roller(500, &auto_control);
+    pros::Task::delay(50);
+    // pros::Task::delay(5);
+    move_time(-1,150,&auto_control);
+    pros::Task::delay(50);
+    kick_out(&auto_control);
+    // turn_right_relative(80, &auto_control);
+    // pros::Task::delay(50);
+    // move_time(1,2000,&auto_control);
+    // // pros::Task::delay(5);
+    // // rotate_roller(500, &auto_control);
+    // // move_front_relative(0.8, &auto_control);
+    // pros::Task::delay(50);
+    // move_time(-1,700,&auto_control);
+    // pros::Task::delay(50);
+    // turn_right_relative(45, &auto_control);
+    // // rotate_roller(500, &auto_control);
+    // move_front_relative(-1, &auto_control);
+    // pros::Task::delay(50);
+    // turn_left_relative(90, &auto_control);
+    
+    // pros::Task::delay(37*1000);
+    // pros::Mutex auto_mutex;
+    // auto_mutex.take();
+    // {
+    //     auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_HIGH_STATE;
+    // }
+    // auto_mutex.give();
+    // pros::Task::delay(0.5*1000);
+    // auto_mutex.take();
+    // {
+    //     auto_control.functional_status->extension_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+    // }
+    // auto_mutex.give();
+    
     //     pros::Task::delay(1000);
     // move_back_relative(0.05,&auto_control);
     //     pros::Task::delay(1000);

@@ -139,13 +139,6 @@ void move_to(double target_x, double target_y, auto_control_t* move);
  */
 void move_time(double direction, double time, auto_control_t* move);
 
-/**
- * @brief           move a relative distance
- * @param[in]       target_distance: aimed distance
- * @param[in,out]   move: find current position,give chassis voltage
- * @retval          null
- */
-void move_front_relative(double target_distance, auto_control_t* move);
 
 void move_back_relative(double target_distance, auto_control_t* move);
 
@@ -172,12 +165,15 @@ void rotate_roller(std::int32_t time , auto_control_t* rotate);
  * @retval          null
  */
 
-void move_horizontal_right_relative(double target_distance, auto_control_t* move);
+void move_horizontal_relative(double target_distance, auto_control_t* move);
 
-void move_horizontal_left_relative(double target_distance, auto_control_t* move);
-
-void move_front_speed_relative(double target_distance, auto_control_t* move, std::int32_t analog_left_y);
-
-void turn_left_relative(double target_angle, auto_control_t* turn);
+/**
+ * @brief           move a relative distance, unit is meter
+ * @param[in]       target_distance: aimed distance
+ * @param[in,out]   move: find current position,give chassis voltage
+ * @param[in,out]   analog_left_y: the value to simulate joystic. default: CHASSIS_MOVE_SPEED
+ * @retval          null
+ */
+void move_vertical_relative_speed(double target_distance, auto_control_t* move, std::int32_t analog_left_y);
 
 #endif

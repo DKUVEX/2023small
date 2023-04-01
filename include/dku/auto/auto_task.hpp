@@ -33,6 +33,9 @@
 #define FORWARD 1
 #define BACKWARD -1
 #define STOP 0
+
+#define CHASSIS_MOVE_SPEED 60
+
 typedef struct {
     double current_x;
     double current_y;
@@ -95,7 +98,7 @@ void turn_to(double target_x, double target_y, auto_control_t* turn);
  * @param[in,out]   turn: find current position,give chassis voltage
  * @retval          null
  */
-void turn_right_relative(double target_angle, auto_control_t* turn);
+void turn_relative(double target_angle, auto_control_t* turn);
 
 /**
  * @brief           let robot turn to specific point
@@ -125,15 +128,15 @@ void move_to(double target_x, double target_y, auto_control_t* move);
 void move_time(double direction, double time, auto_control_t* move);
 
 /**
- * @brief           move a relative distance
+ * @brief           move a relative distance, unit is meter
  * @param[in]       target_distance: aimed distance
  * @param[in,out]   move: find current position,give chassis voltage
+ * @param[in,out]   analog_left_y: the value to simulate joystic
  * @retval          null
  */
-void move_front_relative(double target_distance, auto_control_t* move);
-
-void move_back_relative(double target_distance, auto_control_t* move);
-
+// TODO: use enum state value to handle the move and rotate state, ro achieve
+// high level movement(along the circle/or...)
+void move_vertical_relative_speed(double target_distance, auto_control_t* move, std::int32_t analog_left_y = CHASSIS_MOVE_SPEED);
 /**
  * @brief           kick out 3 plates
  * @param[in,out]   kick: change the voltage of index
@@ -150,18 +153,10 @@ void kick_out(auto_control_t* kick);
 void rotate_roller(std::int32_t time , auto_control_t* rotate);
 
 /**
- 
- 
- * @brief           auto control init
- * @param[in,out]   init:
- * @retval          null
+ * @brief           let robot move horizontal via mecanum wheel
+ * @param[in]       target_distance: unit in meter
+ * @param[out]      move: move control pointer
+ * @retval          
  */
-
-void move_horizontal_right_relative(double target_distance, auto_control_t* move);
-
-void move_horizontal_left_relative(double target_distance, auto_control_t* move);
-
-
-void turn_left_relative(double target_angle, auto_control_t* turn);
-
+void move_horizontal_relative(double target_distance, auto_control_t* move);
 #endif

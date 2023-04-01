@@ -175,8 +175,8 @@ void rc_update_task_fn(void* param)
             controller_update.op_start_time = pros::millis();
             rc_update_mutex.take();
             {
-                controller_update.functional_status->gas_gpio = FUNCTIONAL_LIFT_LOW_STATE;
-                controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
+                // controller_update.functional_status->gas_gpio = FUNCTIONAL_LIFT_LOW_STATE;
+                // controller_update.functional_status->flywheel = E_FLYWHEEL_STATUS_SPEED_HIGH;
             }
             rc_update_mutex.give();
             printf("here");

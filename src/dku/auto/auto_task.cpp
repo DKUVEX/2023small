@@ -263,7 +263,7 @@ void move_time(double direction, double time, auto_control_t* move)
  */
 // TODO: use enum state value to handle the move and rotate state, ro achieve
 // high level movement(along the circle/or...)
-void move_vertical_relative_speed(double target_distance, auto_control_t* move, std::int32_t analog_left_y = CHASSIS_MOVE_SPEED)
+void move_vertical_relative_speed(double target_distance, auto_control_t* move, std::int32_t analog_left_y)
 {
     std::int32_t direction_flag = -1;
     if (target_distance > 0 ) {
@@ -303,7 +303,7 @@ void move_vertical_relative_speed(double target_distance, auto_control_t* move, 
     turn_mutex.give();
 }
 
-void move_horizontal_right_relative(double target_distance, auto_control_t* move)
+void move_horizontal_relative(double target_distance, auto_control_t* move)
 {
     std::int32_t direction_flag = -1;
     if (target_distance > 0 ) {

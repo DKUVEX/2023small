@@ -87,7 +87,11 @@ void autonomous() {
     
     // auto_control.functional_status->intake_motor = E_FUNCTIONAL_MOTOR_STATUS_OFF;
 
-    turn_relative(-90, &auto_control);
+    // turn_relative(-90, &auto_control);
+    // move_vertical_relative_speed(-0.5, &auto_control);
+
+    move_horizontal_relative(0.5, &auto_control);
+    
     // turn_relative(90, &auto_control);
 
     // turn_relative(-90, &auto_control);

@@ -87,7 +87,9 @@ void autonomous() {
     auto_init(&auto_control);
 
     // turn_relative(-90, &auto_control);
-    move_vertical_relative_speed(-1, &auto_control);
+    // turn_relative(90, &auto_control);
+
+    // move_vertical_relative_speed(-1, &auto_control);
 
     // move_horizontal_relative(0.5, &auto_control);
 

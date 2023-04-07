@@ -22,6 +22,13 @@
 #include <cstdint>
 
 auto_control_t auto_control;
+
+/**
+ * @brief           auto control init
+ * @param[in,out]   init:
+ * @retval          null
+ */
+//TODO: clear all the statement of chassis & functions
 void auto_init(auto_control_t* init)
 {
 
@@ -124,14 +131,14 @@ void turn_relative(double target_angle, auto_control_t* turn)
     while (angle < target_angle*direction_flag) {
         turn_mutex.take();
         {
-            turn->chassis_voltage[0] = analog_right_x;
-            turn->chassis_voltage[1] = analog_right_x;
-            turn->chassis_voltage[2] = -analog_right_x;
-            turn->chassis_voltage[3] = -analog_right_x;
+            turn->chassis_voltage[0] = analog_right_x*direction_flag;
+            turn->chassis_voltage[1] = analog_right_x*direction_flag;
+            turn->chassis_voltage[2] = -analog_right_x*direction_flag;
+            turn->chassis_voltage[3] = -analog_right_x*direction_flag;
         }
         turn_mutex.give();
         yaw_gyro = turn->sensor_data->gps_front_data.gps_gyro.z;
-        angle += yaw_gyro * (AUTO_TASK_TIME_MS/1000.0) * (double)direction_flag;
+        angle += (yaw_gyro * (AUTO_TASK_TIME_MS/1000.0) * (double)direction_flag);
         
         printf("angle %lf\n", angle);
         pros::lcd::print(2, "angle: %lf\n", angle);
